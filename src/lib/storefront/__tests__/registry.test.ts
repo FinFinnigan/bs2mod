@@ -6,9 +6,10 @@ import {
 } from "../registry";
 
 describe("storefront template registry", () => {
-  it("registers Miski2 alongside the existing templates", () => {
-    expect(STOREFRONT_TEMPLATES).toEqual(["vanilla", "miski", "miski2"]);
+  it("registers Miski2 and Miski3 alongside the existing templates", () => {
+    expect(STOREFRONT_TEMPLATES).toEqual(["vanilla", "miski", "miski2", "miski3"]);
     expect(isStorefrontTemplate("miski2")).toBe(true);
+    expect(isStorefrontTemplate("miski3")).toBe(true);
   });
 
   it("keeps the existing default template", () => {

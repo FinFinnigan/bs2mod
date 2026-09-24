@@ -1,3 +1,4 @@
+import { Miski3Editor } from "./Miski3Editor";
 import {
   getActiveStorefrontTemplate,
   STOREFRONT_TEMPLATES,
@@ -18,6 +19,10 @@ const TEMPLATE_META: Record<(typeof STOREFRONT_TEMPLATES)[number], { name: strin
   miski2: {
     name: "Miski2",
     blurb: "A fresh, cool-neutral Miski variant with its own palette and shared commerce flows.",
+  },
+  miski3: {
+    name: "Miski3",
+    blurb: "A warm editorial storefront with photographic campaigns, rounded product galleries and shared commerce flows.",
   },
 };
 
@@ -41,6 +46,11 @@ export default async function StorefrontAdminPage({
       {error === "invalid" && (
         <p style={{ color: "var(--color-error)", fontWeight: 700 }}>
           Invalid template selection.
+        </p>
+      )}
+      {error && error !== "invalid" && (
+        <p style={{ color: "var(--color-error)", fontWeight: 700 }}>
+          Settings could not be saved. Check the values and database connection.
         </p>
       )}
 
@@ -82,6 +92,7 @@ export default async function StorefrontAdminPage({
           );
         })}
       </section>
+      <Miski3Editor />
     </div>
   );
 }

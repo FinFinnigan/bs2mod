@@ -1,0 +1,11 @@
+import Link from 'next/link';
+import {productsByCollection} from '@/lib/backend/catalog-facade';
+import {getMiski3Settings} from '@/lib/storefront/miski3-server';
+import {ProductGrid} from '@/components/product/ProductGrid';
+import {IconHeart,IconReturn,IconShield,IconTruck} from '@/components/ui/icons';
+export default async function HomePage(){
+ const c=await getMiski3Settings();const products=(await productsByCollection(c.collection)).slice(0,8);
+ return <div className="m2-home">{c.sections.filter(s=>s.enabled).sort((a,b)=>a.position-b.position).map(s=><div key={s.id}>
+ {s.type==='hero'?<><section className="m2-hero" aria-labelledby="hero-title"><img className="m2-hero-photo" src={c.heroImage} alt="A little adventurer in soft everyday layers" fetchPriority="high"/><div className="m2-hero-copy"><p className="eyebrow">Made for their everyday adventures</p><h1 id="hero-title">{c.headline.split('\n').map((line,i)=><span key={i} style={{display:'block',fontWeight:i===2?750:400}}>{line}</span>)}</h1><p>{c.description}</p><div className="m2-actions"><Link className="btn btn-primary" href={c.heroLink}>Shop now <span>→</span></Link><Link className="btn btn-secondary" href={`/collection/${c.collection}`}>Explore collections</Link></div></div><Link className="m2-note" href={`/collection/${c.collection}`}>Adventure<br/>Looks Good<br/>On You<span>↗</span></Link></section><div className="m2-trust"><span><IconShield/>Thoughtful<br/>choices</span><span><IconTruck/>Fast & reliable<br/>shipping</span><span><IconHeart/>Made for little<br/>adventures</span><span><IconReturn/>Easy<br/>returns</span></div></>:s.type==='featured'?<section className="m2-section"><div className="m2-section-heading"><div><p className="eyebrow">Fresh favourites</p><h2>{c.featuredTitle}</h2><p>Comfort meets adventure.</p></div><Link className="btn btn-secondary" href={`/collection/${c.collection}`}>View all <span>→</span></Link></div><ProductGrid products={products}/></section>:<section className="m2-editorial"><div><p className="eyebrow">Everyday, extraordinary</p><h2 style={{whiteSpace:'pre-line'}}>{c.editorialTitle}</h2><p>{c.editorialBody}</p><Link href={c.heroLink} className="btn btn-primary">Find their favourites →</Link></div><img src={c.heroImage} alt="Soft layers for everyday adventures" loading="lazy"/></section>}
+ </div>)}</div>
+}

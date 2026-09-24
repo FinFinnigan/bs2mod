@@ -1,4 +1,5 @@
 "use client";
+import { StoreImage } from "@/components/storefront/PresentationProvider";
 
 import Link from "next/link";
 import type { CartItem } from "@/lib/types";
@@ -19,7 +20,7 @@ export function CartLineItem({
     <div style={{ display: "flex", gap: 12, padding: "var(--space-3) 0" }}>
       <Link href={item.product.href} style={{ flex: "0 0 auto" }}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
+        <StoreImage
           src={item.product.image.src}
           alt={item.product.image.alt}
           style={{ width: 72, height: 72, borderRadius: 12, objectFit: "cover" }}

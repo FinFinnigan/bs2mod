@@ -1,0 +1,9 @@
+'use client';
+import Link from 'next/link';
+import {useState} from 'react';
+import {useCart} from '@/lib/cart/CartProvider';
+import {MISKI3_DEFAULTS,type Miski3Settings} from '@/lib/storefront/miski3-settings';
+import {IconCart,IconMenu,IconSearch,IconHeart} from '@/components/ui/icons';
+import {SearchOverlay} from '@/components/search/SearchOverlay';
+import {MobileNavDrawer} from '@/components/layout/MobileNavDrawer';
+export function SiteChrome({settings=MISKI3_DEFAULTS}:{settings?:Miski3Settings}){const [search,setSearch]=useState(false);const [menu,setMenu]=useState(false);const {cart,openCart}=useCart();return <><a href="#main" className="m2-skip">Skip to content</a>{settings.announcement&&<div className="m2-preview-bar">{settings.announcement}</div>}<header className="m2-header"><button className="header__icon mobile-only" onClick={()=>setMenu(true)} aria-label="Open menu"><IconMenu/></button><Link className="m2-logo" href="/">{settings.logo?<img src={settings.logo} alt={settings.brandName} style={{maxWidth:140,maxHeight:42}}/>:settings.brandName}<small>{settings.footer}</small></Link><nav aria-label="Primary" className="m2-nav"><Link href="/">Home</Link><Link href="/shop">Shop</Link><Link href="/collection/new-arrivals">New in</Link><Link href="/category/hoodies">Hoodies</Link><Link href="/category/sneakers">Shoes</Link><Link href="/collection/bestsellers">Favourites</Link></nav><div className="m2-header-actions"><button className="header__icon" onClick={()=>setSearch(true)} aria-label="Search"><IconSearch/></button><button className="header__icon" onClick={openCart} aria-label={`Open bag, ${cart.itemCount} items`}><IconCart/>{cart.itemCount>0&&<span className="cart-badge">{cart.itemCount}</span>}</button><Link href="/account" className="header__icon" aria-label="Account"><IconHeart/></Link></div></header><SearchOverlay open={search} onClose={()=>setSearch(false)}/><MobileNavDrawer open={menu} onClose={()=>setMenu(false)}/></>}
