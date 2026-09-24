@@ -211,9 +211,35 @@ export default function ProductForm({ mode, product, error }: ProductFormProps) 
             type="checkbox"
             name="inStock"
             defaultChecked={product?.inStock ?? true}
+            disabled={mode === "edit" && (product?.variants?.length ?? 0) > 0}
           />
+          {mode === "edit" && (product?.variants?.length ?? 0) > 0 && (
+            <input type="hidden" name="inStockDerived" value="1" />
+          )}
           In stock
+          {mode === "edit" && (product?.variants?.length ?? 0) > 0 && (
+            <span style={{ color: "var(--color-ink-muted)", fontSize: "var(--fs-caption)", fontWeight: 400 }}>
+              (derived from variant stock)
+            </span>
+          )}
         </label>
+        {mode === "edit" &&
+          product?.variants?.map((v) => (
+            <div key={v.id} style={{ width: 140 }}>
+              <label style={labelStyle} htmlFor={`pf-stock-${v.id}`}>
+                Stock — {v.id}
+              </label>
+              <input
+                id={`pf-stock-${v.id}`}
+                name={`variantStock-${v.id}`}
+                style={fieldStyle}
+                type="number"
+                min="0"
+                step="1"
+                defaultValue={v.stock}
+              />
+            </div>
+          ))}
         {mode === "edit" && (
           <label style={{ display: "flex", alignItems: "center", gap: 8, fontWeight: 700 }}>
             <input

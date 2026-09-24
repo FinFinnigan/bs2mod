@@ -79,7 +79,25 @@ function badgeList(formData: FormData): string[] {
     .filter(Boolean);
 }
 
+// Per-variant stock inputs (name="variantStock-<variantId>"). Empty input means
+// "leave unchanged" → the variant is skipped. Invalid input stays NaN so the
+// schema's .int().nonnegative() rejection reports it (same pattern as
+// eurosToCents). Returns undefined when nothing matched so the create path and
+// no-variant products are unaffected.
+function variantStocks(formData: FormData): { id: string; stock: number }[] | undefined {
+  const variants: { id: string; stock: number }[] = [];
+  for (const [key, value] of formData.entries()) {
+    const match = /^variantStock-(.+)$/.exec(key);
+    if (!match) continue;
+    const trimmed = typeof value === "string" ? value.trim() : "";
+    if (trimmed === "") continue;
+    variants.push({ id: match[1], stock: Number(trimmed) });
+  }
+  return variants.length > 0 ? variants : undefined;
+}
+
 function productFields(formData: FormData) {
+  const variants = variantStocks(formData);
   return {
     slug: text(formData.get("slug")),
     name: text(formData.get("name")),
@@ -89,7 +107,10 @@ function productFields(formData: FormData) {
     compareAtPrice: compareAtCents(formData),
     currency: currencyValue(formData),
     badges: badgeList(formData),
-    inStock: checked(formData, "inStock"),
+    // When variants exist the inStock checkbox is disabled and a hidden
+    // inStockDerived marker is submitted instead; omit inStock so the repo's
+    // variant-derived sync (C02.04) is the only writer of the flag.
+    ...(formData.get("inStockDerived") === "1" ? {} : { inStock: checked(formData, "inStock") }),
     colourHex: nullableText(formData.get("colourHex")),
     description: nullableText(formData.get("description")),
     material: nullableText(formData.get("material")),
@@ -97,6 +118,7 @@ function productFields(formData: FormData) {
     care: nullableText(formData.get("care")),
     origin: nullableText(formData.get("origin")),
     imageUrl: nullableText(formData.get("imageUrl")),
+    ...(variants ? { variants } : {}),
   };
 }
 
