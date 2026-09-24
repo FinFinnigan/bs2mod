@@ -1,4 +1,5 @@
 "use client";
+import { StoreImage } from "@/components/storefront/PresentationProvider";
 
 import { useRef, useState } from "react";
 import type { ProductImage } from "@/lib/types";
@@ -28,7 +29,7 @@ export function Gallery({ images }: { images: ProductImage[] }) {
         }}
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={images[index].src} alt={images[index].alt} style={{ width: "100%", aspectRatio: "3 / 4", objectFit: "cover" }} />
+        <StoreImage src={images[index].src} alt={images[index].alt} style={{ width: "100%", aspectRatio: "3 / 4", objectFit: "cover" }} />
         <span
           style={{
             position: "absolute",
@@ -65,7 +66,7 @@ export function Gallery({ images }: { images: ProductImage[] }) {
             }}
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={img.src} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+            <StoreImage src={img.src} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
           </button>
         ))}
       </div>

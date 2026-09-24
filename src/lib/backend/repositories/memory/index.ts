@@ -28,6 +28,7 @@ import type {
 } from "@/lib/types";
 import type { CatalogProduct } from "@/lib/data/products";
 import { toMinor, toMoney } from "../../money";
+import { isInStock } from "../../availability";
 import { placeholder } from "@/lib/placeholder";
 
 const MAX_QUANTITY = 99;
@@ -85,7 +86,7 @@ function toAdminProduct(p: MemoryProduct): AdminProductRecord {
     compareAtPrice: p.card.compareAtPrice ? toMinor(p.card.compareAtPrice) : null,
     currency: p.card.price.currency,
     badges: p.card.badges,
-    inStock: p.card.inStock,
+    inStock: p.variants.length > 0 ? isInStock(p.variants) : p.card.inStock,
     colourHex: p.colourHex ?? p.variants.find((v) => v.colourHex)?.colourHex ?? null,
     description: p.description ?? null,
     material: p.material ?? null,
@@ -285,6 +286,7 @@ export class MemoryCatalogRepository implements CatalogRepository {
         const target = p.variants.find((x) => x.id === v.id);
         if (target) target.stock = v.stock;
       }
+      card.inStock = isInStock(p.variants);
     }
     p.card = card;
     p.updatedAt = new Date().toISOString();

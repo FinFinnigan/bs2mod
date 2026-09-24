@@ -1,4 +1,5 @@
 "use client";
+import { StoreImage } from "@/components/storefront/PresentationProvider";
 
 import Link from "next/link";
 import type { ProductCard as ProductCardType } from "@/lib/types";
@@ -13,7 +14,7 @@ export function ProductCard({ product }: { product: ProductCardType }) {
       <Link href={product.href} aria-label={product.name}>
         <div className="product-card__media">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={product.image.src} alt={product.image.alt} loading="lazy" />
+          <StoreImage src={product.image.src} alt={product.image.alt} loading="lazy" />
           {badge && (
             <span className="product-card__badge">
               <BadgePill badge={badge} />

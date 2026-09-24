@@ -1,4 +1,4 @@
-import { defineConfig } from "vitest/config";
+import { configDefaults, defineConfig } from "vitest/config";
 import { fileURLToPath } from "node:url";
 
 // Minimal vitest config: resolve the Next.js "@/*" tsconfig path alias so the
@@ -8,5 +8,8 @@ export default defineConfig({
     alias: {
       "@": fileURLToPath(new URL("./src", import.meta.url)),
     },
+  },
+  test: {
+    exclude: [...configDefaults.exclude, "references/**"],
   },
 });
