@@ -7,12 +7,16 @@ import { eq, and, inArray } from "drizzle-orm";
 import type { CartRepository, CartLine } from "../interfaces";
 import { StockUnavailableError } from "../interfaces";
 import { getDb } from "../../db/client";
-import { carts, cartItems, variants, products } from "../../db/schema";
+import { carts, cartItems, variants, products, type VariantRow } from "../../db/schema";
+import { isInStock } from "../../availability";
 import type { CartState, CartItem, ProductCard, ProductVariant } from "@/lib/types";
 import { toMoney } from "../../money";
 import { placeholder } from "@/lib/placeholder";
 
-function variantToProductCard(p: typeof products.$inferSelect): ProductCard {
+export function variantToProductCard(
+  p: typeof products.$inferSelect,
+  productVariants: VariantRow[]
+): ProductCard {
   return {
     id: p.id,
     slug: p.slug,
@@ -27,7 +31,7 @@ function variantToProductCard(p: typeof products.$inferSelect): ProductCard {
       src: placeholder(p.name, p.colourHex ?? "#E5E0D6", "#FFFFFF"),
       alt: `${p.name} — ${p.categorySlug.toUpperCase()}`,
     },
-    inStock: p.inStock,
+    inStock: productVariants.length > 0 ? isInStock(productVariants) : p.inStock,
     href: `/product/${p.slug}`,
     ...(p.ageBand ? { ageLabel: p.ageBand } : {}),
   };
@@ -66,6 +70,18 @@ async function resolveCart(db: ReturnType<typeof getDb>, cartId: string): Promis
     const productsById = new Map(
       (await db.select().from(products).where(inArray(products.id, productIds))).map((p) => [p.id, p])
     );
+    const allVariantsByProduct = new Map<string, VariantRow[]>();
+    if (productIds.length > 0) {
+      const allVariants = await db
+        .select()
+        .from(variants)
+        .where(inArray(variants.productId, productIds));
+      for (const v of allVariants) {
+        const list = allVariantsByProduct.get(v.productId);
+        if (list) list.push(v);
+        else allVariantsByProduct.set(v.productId, [v]);
+      }
+    }
 
     for (const line of lines) {
       const variant = variantsById.get(line.variantId);
@@ -73,7 +89,7 @@ async function resolveCart(db: ReturnType<typeof getDb>, cartId: string): Promis
       const product = productsById.get(variant.productId);
       if (!product) continue;
       const unit = variant.priceOverride ?? product.price;
-      const card = variantToProductCard(product);
+      const card = variantToProductCard(product, allVariantsByProduct.get(product.id) ?? []);
       const v = variantToVariant(variant, product.currency);
       items.push({
         product: card,

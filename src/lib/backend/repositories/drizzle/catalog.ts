@@ -28,8 +28,9 @@ import type {
 import type { CatalogProduct } from "@/lib/data/products";
 import { toMoney } from "../../money";
 import { placeholder } from "@/lib/placeholder";
+import { isInStock } from "../../availability";
 
-function rowToCard(row: ProductRow): ProductCard {
+export function rowToCard(row: ProductRow, variantRows: VariantRow[]): ProductCard {
   return {
     id: row.id,
     slug: row.slug,
@@ -44,7 +45,7 @@ function rowToCard(row: ProductRow): ProductCard {
       src: row.imageUrl ?? placeholder(row.name, row.colourHex ?? "#E5E0D6", "#FFFFFF"),
       alt: `${row.name} — ${row.categorySlug.toUpperCase()}`,
     },
-    inStock: row.inStock,
+    inStock: variantRows.length > 0 ? isInStock(variantRows) : row.inStock,
     href: `/product/${row.slug}`,
     ...(row.ageBand ? { ageLabel: row.ageBand } : {}),
   };
@@ -74,7 +75,7 @@ function rowToCatalogProduct(row: ProductRow, variantRows: VariantRow[]): Catalo
     ...new Set(variantRows.map((v) => v.size).filter((s): s is string => Boolean(s))),
   ];
   return {
-    ...rowToCard(row),
+    ...rowToCard(row, variantRows),
     categorySlug: row.categorySlug,
     ageBand: row.ageBand,
     colourHex: row.colourHex ?? variantRows.find((v) => v.colourHex)?.colourHex ?? "",
@@ -88,7 +89,7 @@ function rowToCatalogProduct(row: ProductRow, variantRows: VariantRow[]): Catalo
   };
 }
 
-function rowToAdminProduct(row: ProductRow): AdminProductRecord {
+export function rowToAdminProduct(row: ProductRow, variantRows: VariantRow[]): AdminProductRecord {
   return {
     id: row.id,
     slug: row.slug,
@@ -99,7 +100,7 @@ function rowToAdminProduct(row: ProductRow): AdminProductRecord {
     compareAtPrice: row.compareAtPrice ?? null,
     currency: row.currency,
     badges: row.badges ?? [],
-    inStock: row.inStock,
+    inStock: variantRows.length > 0 ? isInStock(variantRows) : row.inStock,
     colourHex: row.colourHex ?? null,
     description: row.description ?? null,
     material: row.material ?? null,
@@ -120,9 +121,27 @@ async function withVariants(row: ProductRow): Promise<AdminProductRecord> {
     .from(variants)
     .where(eq(variants.productId, row.id));
   return {
-    ...rowToAdminProduct(row),
+    ...rowToAdminProduct(row, variantRows),
     variants: variantRows.map((v) => ({ id: v.id, stock: v.stock })),
   };
+}
+
+async function variantsByProduct(
+  db: ReturnType<typeof getDb>,
+  productIds: string[]
+): Promise<Map<string, VariantRow[]>> {
+  if (!productIds.length) return new Map();
+  const variantRows = await db
+    .select()
+    .from(variants)
+    .where(inArray(variants.productId, productIds));
+  const byProduct = new Map<string, VariantRow[]>();
+  for (const v of variantRows) {
+    const list = byProduct.get(v.productId);
+    if (list) list.push(v);
+    else byProduct.set(v.productId, [v]);
+  }
+  return byProduct;
 }
 
 export class DrizzleCatalogRepository implements CatalogRepository {
@@ -153,8 +172,10 @@ export class DrizzleCatalogRepository implements CatalogRepository {
       ...(product.origin ? [{ label: "Origin", value: product.origin }] : []),
     ].filter((a) => a.value);
 
+    const othersById = await variantsByProduct(db, others.map((o) => o.id));
+
     return {
-      ...rowToCard(product),
+      ...rowToCard(product, variantRows),
       gallery: [
         { src: placeholder(`${product.name} · Front`, product.colourHex ?? "#E5E0D6", "#FFFFFF"), alt: `${product.name} front` },
         { src: placeholder(`${product.name} · Detail`, product.colourHex ?? "#E5E0D6", "#FFFFFF", 600, 600), alt: `${product.name} detail` },
@@ -166,8 +187,14 @@ export class DrizzleCatalogRepository implements CatalogRepository {
       reviewSummary: { count: 0, average: 0 },
       reviews: [],
       crossSell: {
-        "complete-the-look": others.filter((o) => o.id !== product.id).slice(0, 3).map(rowToCard),
-        "you-may-also-like": others.filter((o) => o.id !== product.id).slice(3, 7).map(rowToCard),
+        "complete-the-look": others
+          .filter((o) => o.id !== product.id)
+          .slice(0, 3)
+          .map((o) => rowToCard(o, othersById.get(o.id) ?? [])),
+        "you-may-also-like": others
+          .filter((o) => o.id !== product.id)
+          .slice(3, 7)
+          .map((o) => rowToCard(o, othersById.get(o.id) ?? [])),
       },
       variants: variantRows.map(variantRowToVariant),
     };
@@ -196,7 +223,8 @@ export class DrizzleCatalogRepository implements CatalogRepository {
       });
     }
 
-    let out = rows.map(rowToCard);
+    const byProduct = await variantsByProduct(db, rows.map((r) => r.id));
+    let out = rows.map((r) => rowToCard(r, byProduct.get(r.id) ?? []));
     switch (query.sort) {
       case "price-asc":
         out = [...out].sort((a, b) => a.price.amount - b.price.amount);
@@ -246,17 +274,7 @@ export class DrizzleCatalogRepository implements CatalogRepository {
 
     if (!rows.length) return [];
 
-    const variantRows = await db
-      .select()
-      .from(variants)
-      .where(inArray(variants.productId, rows.map((r) => r.id)));
-
-    const byProduct = new Map<string, VariantRow[]>();
-    for (const v of variantRows) {
-      const list = byProduct.get(v.productId);
-      if (list) list.push(v);
-      else byProduct.set(v.productId, [v]);
-    }
+    const byProduct = await variantsByProduct(db, rows.map((r) => r.id));
 
     return rows.map((r) => rowToCatalogProduct(r, byProduct.get(r.id) ?? []));
   }
@@ -317,7 +335,8 @@ export class DrizzleCatalogRepository implements CatalogRepository {
           sql`lower(${products.name}) LIKE ${`%${query}%`} OR lower(${products.categorySlug}) LIKE ${`%${query}%`}`
         )
       );
-    const cards = rows.map(rowToCard);
+    const byProduct = await variantsByProduct(db, rows.map((r) => r.id));
+    const cards = rows.map((r) => rowToCard(r, byProduct.get(r.id) ?? []));
     return { query: q, products: cards, totalCount: cards.length };
   }
 
@@ -398,6 +417,13 @@ export class DrizzleCatalogRepository implements CatalogRepository {
           .set({ stock: v.stock })
           .where(and(eq(variants.id, v.id), eq(variants.productId, id)));
       }
+      const variantRows = await db.select().from(variants).where(eq(variants.productId, id));
+      const [synced] = await db
+        .update(products)
+        .set({ inStock: isInStock(variantRows) })
+        .where(eq(products.id, id))
+        .returning();
+      return withVariants(synced ?? row);
     }
     return withVariants(row);
   }
