@@ -15,6 +15,10 @@ const TEMPLATE_META: Record<(typeof STOREFRONT_TEMPLATES)[number], { name: strin
     name: "Vanilla",
     blurb: "The legacy storefront, preserved verbatim from the original build.",
   },
+  miski2: {
+    name: "Miski2",
+    blurb: "A fresh, cool-neutral Miski variant with its own palette and shared commerce flows.",
+  },
 };
 
 // Storefront template switcher (ADM-005). Two cards, each a plain form POST;

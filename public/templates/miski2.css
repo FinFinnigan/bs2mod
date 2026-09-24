@@ -1,0 +1,34 @@
+/* Miski2 — cool-neutral palette variant of the Miski storefront.
+   Structural styling and responsive components are shared from miski.css. */
+
+:root {
+  --color-canvas: #f3f6f8;
+  --color-surface: #ffffff;
+  --color-surface-glass: rgba(255, 255, 255, 0.78);
+  --color-surface-muted: #edf2f5;
+  --color-ink: #18212b;
+  --color-ink-muted: #5b6570;
+  --color-primary: #173a5a;
+  --color-primary-hover: #102c45;
+  --color-accent-navy: #173a5a;
+  --color-accent-sage: #55756b;
+  --color-accent-terracotta: #c47c5e;
+  --color-accent-rose: #d8aaa3;
+  --color-accent-sky: #91c6df;
+  --color-accent: var(--color-accent-sky);
+  --color-well: #e8eef2;
+  --color-border: rgba(24, 33, 43, 0.1);
+  --color-border-strong: rgba(24, 33, 43, 0.16);
+  --color-glass-rim: rgba(255, 255, 255, 0.74);
+  --color-glass-shadow: rgba(23, 58, 90, 0.08);
+  --radius-control: 12px;
+  --radius-card: 18px;
+  --radius-panel: 26px;
+}
+
+body {
+  background:
+    radial-gradient(circle at 8% 0%, rgba(255, 255, 255, 0.92), transparent 34rem),
+    radial-gradient(circle at 92% 24%, rgba(145, 198, 223, 0.2), transparent 28rem),
+    var(--color-canvas);
+}

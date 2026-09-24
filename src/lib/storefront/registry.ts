@@ -4,7 +4,7 @@
 // template is persisted in the settings table and read through the backend
 // container, so a missing database falls back to the default without crashing.
 
-export const STOREFRONT_TEMPLATES = ["vanilla", "miski"] as const;
+export const STOREFRONT_TEMPLATES = ["vanilla", "miski", "miski2"] as const;
 export type StorefrontTemplate = (typeof STOREFRONT_TEMPLATES)[number];
 export const DEFAULT_STOREFRONT_TEMPLATE: StorefrontTemplate = "miski";
 export const STOREFRONT_SETTINGS_KEY = "storefront.template";
