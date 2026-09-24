@@ -1,0 +1,18 @@
+{
+  "name": "boyshop-test",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2026-09-21",
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": { "directory": ".open-next/assets", "binding": "ASSETS" },
+  "observability": { "enabled": true },
+  "vars": {
+    "PUBLIC_URL": "https://boyshop-test.i-janajoe.workers.dev",
+    "PAYMENT_PROVIDER": "mollie",
+    "PAYMENT_PROVIDERS": "mock,mollie",
+    "FEATURE_WISHLIST": "false",
+    "FEATURE_REVIEWS": "false",
+    "FEATURE_ACCOUNT": "false",
+    "FEATURE_PROMOTIONS": "false",
+    "FEATURE_RECOMMENDATIONS": "false"
+  }
+}

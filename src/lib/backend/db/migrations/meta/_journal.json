@@ -1,0 +1,55 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1789595355221,
+      "tag": "0000_acoustic_ultragirl",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1789941992605,
+      "tag": "0001_organic_liz_osborn",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1789971505562,
+      "tag": "0002_green_quentin_quire",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1789989627410,
+      "tag": "0003_fantastic_switch",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1790035190415,
+      "tag": "0004_swift_blade",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1790043965534,
+      "tag": "0005_lucky_stryfe",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1790242961897,
+      "tag": "0006_eminent_black_tom",
+      "breakpoints": true
+    }
+  ]
+}
