@@ -80,6 +80,8 @@ C01.11 DONE (2026-09-23): CEO-approved documentation gate completed in five atom
 
 `inventory`: C02.02 DONE (2026-09-24). DB-backed proof suite on isolated real database (Neon test branch `c02-02-proof`/`br-ancient-hall-za23hv5a`, restore snapshot `pre-c02-02-main` taken first). Two files only: `drizzle/__tests__/order.test.ts` + helper `__tests__/helpers/proofDb.ts`. Proofs all passed: (A) rollback of stock decrement + every write on mid-create unique-key violation; (B) duplicate idempotency-key creates serialize → one order + one decrement (DB unique index `orders_idempotency_key_unique` asserted in `beforeAll`); (C) last-unit race never leaves stock negative; (D) order/items/address/decrement atomic. Verification green: `TEST_DATABASE_URL` evidence run 6/6 passed (2 fake-tx + 4 real), no-env run skips correctly, typecheck 0. No defect in C02.01 path → no production fix. No commit (uncommitted by design). Next = C02.03 `database-stock-constraints`.
 
+`inventory`: C02.04 DONE (2026-09-24) — `availability.ts` `isInStock()` authoritative rule; derived `inStock` on all reads (drizzle catalog/cart, memory), writers sync the stored flag; 3 new test suites; commit `59a6bb4`; typecheck/test(322)/build green.
+
 ## Dynamic rule
 
 When a phase becomes active:

@@ -10,15 +10,15 @@ This must discover and evaluate **all currently installed OMO agents** for this 
 
 ## Execute exactly this chunk
 
-`chunks/02-inventory/C02.04-authoritative-availability-rule.md`
+`chunks/02-inventory/C02.05-admin-variant-stock-editing.md`
 
-Phase 02 chunk 4 — one authoritative availability rule: `variants.stock` becomes the single source of truth; a shared `isInStock()` helper derives availability, all availability readers (storefront card, cart card, admin record) and stock-touching writers (create/update admin product in Drizzle + memory repos) use it, so product-level `inStock` can no longer disagree with variant stock. No schema changes; the column is retained (removing it is out of scope).
+Phase 02 chunk 5 — admin variant-stock editing: per-variant quantity inputs in the admin product edit form (`product-form.tsx` ~lines 208–216), `productFields()` (`actions.ts` ~line 82) reads them, saving updates `variants.stock` through the existing validated mutation path; availability reads flow through the C02.04 rule without toggling the product-level flag.
 
-Why: C02.03 locked non-negative `variants.stock` in the database, but product `inStock` is still a stored boolean that can disagree with variant quantities (a known supporting gap from Phase 02 reconnaissance). C02.04 removes that disagreement with a shared derivation and introduces `isInStock()`.
+Why: C02.04 made variant quantities the single source of truth for availability, but the admin form still exposes only the product-level `inStock` flag, not per-variant quantities — C02.05 closes that known supporting gap.
 
 ## Do not continue automatically
 
 After this chunk:
 - exactly one chunk executed;
-- `NEXT.md` points to exactly the next chunk (C02.05 `admin-variant-stock-editing`);
+- `NEXT.md` points to exactly the next chunk, determined at C02.05 closeout — C02.05 is the last of the five generated chunks, then C02.99 phase-02 acceptance;
 - STOP.

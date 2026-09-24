@@ -58,8 +58,16 @@ Phase 02 inventory reconnaissance DONE (2026-09-23, READ ONLY).
 - Verification green: `npm run typecheck` exit 0; full suite with `TEST_DATABASE_URL` set 302/302 (31 files) including the 2 new DB-backed tests and the C02.02 real-Postgres proofs; no-env run skips the DB-backed tests as designed.
 - Diff scope vs HEAD verified: only schema.ts variants hunk (34 lines includes the pre-existing `SettingsRow` line, not this chunk) + journal idx 6 + migration `0006_eminent_black_tom.sql` + `meta/0006_snapshot.json` + new test file. No commits (uncommitted by design).
 
+## C02.04 closeout (2026-09-24)
+- C02.04 DONE: commit `59a6bb4` "Add authoritative variant-stock availability rule (C02.04)" — 7 files changed, +269/−27.
+- New `src/lib/backend/availability.ts` `isInStock()` rule: true iff at least one variant `stock > 0`; empty array → false; readers fall back to the stored boolean only when `variants.length === 0`.
+- Drizzle `catalog.ts`/`cart.ts` and memory `index.ts` reads now derive `inStock`; writers sync stored `products.inStock` whenever variants are present.
+- Three new test suites: backend 20 lines, drizzle 97, memory 71.
+- Verification green: typecheck ✅, full suite 322/322 (35 files), `next build` ✅ 15 static pages.
+- No schema changes; product-level `inStock` column retained (removal out of scope).
+
 ## Next chunk
-`chunks/02-inventory/C02.04-authoritative-availability-rule.md` — authoritative availability rule (product `inStock` derived from variant quantities). Test-DB only, live application CEO-gated per C01.08. Run routing preflight first.
+`chunks/02-inventory/C02.05-admin-variant-stock-editing.md` — admin variant-stock editing: per-variant quantity inputs + `productFields` plumbing (depends on C02.04, now done). Run routing preflight first.
 
 ## C00.11 resolution record
 - Decision approved by user 2026-09-23 (recommended options A1 + B1)
