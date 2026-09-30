@@ -4,7 +4,12 @@ Last refreshed: 2026-09-30 (B4/B1 correction — production database identified 
 
 ## Active phase
 Phase 00 — Repo stabilization: **COMPLETE** (C00.1–C00.14 all closed; C00.13 committed)
-Phase 01 — Existing release blockers: **ACTIVE**; C01.00 recon is COMPLETE and next chunk is `C01.01` (evidence-doc fork reconciliation, docs only)
+Phase 01 — Existing release blockers: **ACTIVE**; C01.00 through C01.03 are complete. B1 and B2 are resolved; B3, B5, and B6 remain blocked.
+
+## C01.03 staging deployment evidence
+- `boyshop-test` version `7e2c4112-a1d3-466e-91e9-24af63bb30c3` was created at `2026-09-30T19:12:11.614475Z` and deployed at `2026-09-30T19:12:13.86559Z`.
+- The live site returned HTTP 200 for `templates/miski2.css`, `templates/miski3.css`, and `templates/miski3/hero.png`.
+- `MOLLIE_ALLOW_LIVE` remains absent from `wrangler.jsonc`, `.env.local`, and deployed bindings.
 
 ## Verified repo truth (2026-09-30)
 - `BS2Mod-site` is its own git repository (own `.git`; `rev-parse --show-toplevel` → `C:/dev/BS2Mod-site`), branch `main`; `origin https://github.com/FinFinnigan/bs2mod.git`. Real history at the **C01.00 recon baseline** was **12 commits** (`183c580` … `0342c4c`), verified **in sync with `origin/main`** then (`git ls-remote origin refs/heads/main` → `183c580` = local HEAD; `git log origin/main..HEAD` empty). The **2026-09-30 B4/B1 correction** advances HEAD to **`2746d7d`, 13 commits**; the C00.13 closeout commit `a0f31c6` is an ancestor and is on the remote.

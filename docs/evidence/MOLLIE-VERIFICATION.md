@@ -7,6 +7,8 @@ Provenance: recorded strictly from the three current-tree evidence files listed 
 
 ## Scope and boundaries
 
+- **C01.03 update (2026-09-30):** staging now serves the current fork after deployment of version `7e2c4112-a1d3-466e-91e9-24af63bb30c3` at `2026-09-30T19:12:13.86559Z`. This did not add `MOLLIE_ALLOW_LIVE`; the deployed binding list contains no such entry, and live payment remains fail-closed.
+
 - This document records repository implementation/tests plus the non-secret runtime binding facts inspected in pre-fork C01.09. It contains no secret values and makes no claim that a live payment succeeded.
 - Payment processing remains **fail-closed for live mode**. Pre-fork C01.06 chose Mollie as the live provider; pre-fork C01.09 conditionally authorized `MOLLIE_ALLOW_LIVE=true` for a future production environment only. Read-only Cloudflare inspection found `MOLLIE_API_KEY` and `MOLLIE_WEBHOOK_SECRET` secret bindings on staging, but their values/prefixes are hidden and `MOLLIE_ALLOW_LIVE` is absent from both `wrangler.jsonc` and `.env.local`. Staging must remain fail-closed. Production activation requires operator confirmation of a `live_*` key and a controlled live E2E test; no live key exists in the repository.
 - **Staging serves the pre-fork version.** Worker `boyshop-test` has `modified_on` `2026-09-22T01:42:07Z`, which predates this fork's 2026-09-24 import, so 244 source/config files in this fork are undeployed and the live staging URL returns 200 while serving no Miski2/Miski3 markers. Local build evidence does exist (re-run 2026-09-30): `npm run build`, `npx opennextjs-cloudflare build` producing `.open-next/worker.js`, and `npx wrangler deploy --dry-run` reporting 125 assets, 6972.67 KiB, nothing deployed.

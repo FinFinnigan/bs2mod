@@ -45,6 +45,8 @@
 
 ## 1. What is being handed over
 
+> **C01.03 update (2026-09-30):** staging Worker `boyshop-test` now serves this fork. Version `7e2c4112-a1d3-466e-91e9-24af63bb30c3` was deployed at `2026-09-30T19:12:13.86559Z`; Miski2 and Miski3 deployed assets returned HTTP 200. B1 and B2 are resolved. `MOLLIE_ALLOW_LIVE` remains absent and staging is not authorized for live payments.
+
 The **BoyShop / BS2Mod** project root (`C:\dev\BS2Mod-site`): a premium, mobile-first
 boys-clothing ecommerce storefront plus its provider-neutral commerce backend, at
 canonical package version `0.11.1` (C00.3 verified and re-verified 2026-09-30:

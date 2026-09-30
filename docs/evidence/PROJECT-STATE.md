@@ -11,6 +11,8 @@
 
 ## 1. Repository truth
 
+- **C01.03 staging update (2026-09-30):** B1 and B2 are resolved. Worker version `7e2c4112-a1d3-466e-91e9-24af63bb30c3` was created at `2026-09-30T19:12:11.614475Z` and deployed at `2026-09-30T19:12:13.86559Z`. Miski2 and Miski3 deployed assets returned HTTP 200. `MOLLIE_ALLOW_LIVE` remains absent.
+
 - `BS2Mod-site` is its own Git repository: it has its own `.git`, and
   `git rev-parse --show-toplevel` returns `C:/dev/BS2Mod-site`. Earlier claims that it
   had no repository of its own and was tracked inside `C:\dev` were stale.

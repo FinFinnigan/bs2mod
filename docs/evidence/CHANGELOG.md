@@ -13,6 +13,12 @@
 
 ## How to read this changelog
 
+## [C01.03] — 2026-09-30 — staging deployment verified
+
+- B1 and B2 are resolved. Cloudflare Worker version `7e2c4112-a1d3-466e-91e9-24af63bb30c3` was created at `2026-09-30T19:12:11.614475Z` and deployed at `2026-09-30T19:12:13.86559Z`.
+- The live staging site returned the current BoyShop page; `templates/miski2.css`, `templates/miski3.css`, and `templates/miski3/hero.png` each returned HTTP 200.
+- `MOLLIE_ALLOW_LIVE` remains absent from local configuration and deployed bindings. Release remains blocked by B3, B5, and B6.
+
 - **One entry per released version** once releases happen (post full-tree commit +
   phases 21–23).
 - Today there are **zero released versions**. The two entries below describe the working

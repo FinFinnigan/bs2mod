@@ -51,6 +51,8 @@
 
 ## 1. What is being deployed
 
+> **C01.03 correction (2026-09-30):** staging is current. Version `7e2c4112-a1d3-466e-91e9-24af63bb30c3` was created at `2026-09-30T19:12:11.614475Z` and deployed at `2026-09-30T19:12:13.86559Z`. The live site returned HTTP 200 for `templates/miski2.css`, `templates/miski3.css`, and `templates/miski3/hero.png`. B1 and B2 are resolved; live payments remain fail-closed.
+
 A premium, mobile-first boys-clothing ecommerce storefront ("BoyShop / BS2Mod"):
 
 - **Storefront** — Next.js `^15.1.6` (App Router) + React `^19.0.0` + TypeScript.
