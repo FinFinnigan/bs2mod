@@ -58,3 +58,18 @@ next-env.d.ts
 /.debug-journal.md
 /bs2mod-home-miski.png
 /qa-desktop-1440.png
+
+# Local pack archives — duplicate zips of folders that are already tracked
+# (kept on disk for convenience; the folders themselves remain tracked)
+/BOYSHOP-NEW-WORKFLOW-PACK-ULW-GATE.zip
+/BOYSHOP-POSTBUILD-INFRA-READINESS-PACK.zip
+
+# Local dev server logs
+/dev-server.log
+/dev-server.err.log
+
+# Miski2 upstream design source (~24 MB zip + unpacked folder).
+# The theme itself is tracked as public/templates/miski2.css; this is the
+# external reference material it was built from, kept on disk only.
+/references/MISKI2-FINAL-OVERHAUL-SOURCE.zip
+/references/MISKI2-FINAL-OVERHAUL-SOURCE/
