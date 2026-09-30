@@ -1,30 +1,44 @@
 # HANDOFF — BoyShop / BS2Mod
 
-> **Status: PRE-LAUNCH — RELEASE BLOCKED.** Reconciled to current committed repository
-> state (C00.7, 2026-09-30). This document is the team/state handoff;
-> `docs/evidence/GO-LIVE.md` is the authoritative operations handoff.
+> **Status: PRE-LAUNCH — RELEASE BLOCKED.** Reconciled to this fork's live repository
+> state (C00.7, then re-reconciled 2026-09-30 in C01.01). This document is the
+> team/state handoff; `docs/evidence/GO-LIVE.md` is the authoritative operations
+> handoff. The working tree is **clean**; nothing in `docs/evidence/` is an
+> outstanding edit.
 >
-> **Commit anchors (corrected 2026-09-30, C00.7).** Earlier wording in this document
-> named `140cf921` (full-tree landing) and `d837b0aa` (initial evidence commit) as
-> anchors. **Neither commit exists in this repository** — `git cat-file -t` rejects both
-> and neither appears in `git log --all`. They belong to an external/shared history that
-> is not this Git repository. `BS2Mod-site` is its own repository
-> (`git rev-parse --show-toplevel` → `C:/dev/BS2Mod-site`), branch `main`, and its real
-> history is:
+> **Commit anchors.** Earlier wording in this document named `140cf921` (full-tree
+> landing) and `d837b0aa` (initial evidence commit) as anchors. **Neither commit exists
+> in this repository** — `git cat-file -t` rejects both and neither appears in
+> `git log --all`. They belong to an external/shared history that is not this Git
+> repository. `BS2Mod-site` is its own repository
+> (`git rev-parse --show-toplevel` → `C:/dev/BS2Mod-site`), branch `main`, with
+> **14 commits** (`git rev-list --count HEAD`) from `0342c4c` to current HEAD
+> **`e3ed3f3`**:
 >
 > | Commit | Subject |
 > |---|---|
-> | `9286a8d` | **HEAD at C00.7 verification** — workflow-pack swap to ULW-GATE + product actions/form/tests (C00.4 closeout) |
-> | `988f7f4` | Merge `codex/miski2-theme` |
-> | `7fa927c` | C02.04 closeout doc sync |
-> | `59a6bb4` | Authoritative variant-stock availability rule (C02.04) |
-> | `bbfa6af` | Miski3 storefront theme |
-> | `5c86e1d` | Miski2 storefront theme |
-> | `0296ec0` | Initial import of BS2Mod-site — first commit that carries `docs/evidence/*` |
-> | `0342c4c` | Initial commit |
+> | `e3ed3f3` | **Current HEAD** - Correct C01.00 B4/B1 claims: production DB identified (Neon boyshop), local CF build evidence |
+> | `2746d7d` | Phase 01 closeout: record C01.00 recon, sync control docs, open C01.01 |
+> | `183c580` | Resolve C00.12 finding F2: gitignore the 6 local build/QA artifacts |
+> | `f074a44` | Correct stale push state: BS2Mod-site is pushed and in sync; C:\dev is out of scope |
+> | `70d10f8` | Phase 00 closeout: sync control docs to commit a0f31c6; open phase 01 with C01.00 recon |
+> | `a0f31c6` | Phase 00 repo stabilization closeout: docs/evidence + pack control sync (C00.2-C00.13) |
+> | `9286a8d` | Pre-fork: workflow-pack swap to ULW-GATE + product actions/form/tests (C00.4 closeout) |
+> | `988f7f4` | Pre-fork: merge `codex/miski2-theme` |
+> | `7fa927c` | Pre-fork: C02.04 closeout doc sync |
+> | `59a6bb4` | Pre-fork: authoritative variant-stock availability rule (C02.04) |
+> | `bbfa6af` | Pre-fork: Miski3 storefront theme |
+> | `5c86e1d` | Pre-fork: Miski2 storefront theme |
+> | `0296ec0` | Pre-fork: initial import of BS2Mod-site — first commit that carries `docs/evidence/*` |
+> | `0342c4c` | Pre-fork: initial commit |
 >
-> This file was itself last committed at `0296ec0`; the C00.7–C00.13 reconciliation
-> edits are committed in the C00.13 approved docs/evidence commit (2026-09-30).
+> Rows marked "Pre-fork" are the previous version imported into this folder. They are
+> history, not current-state claims. (Corrected C01.01: HEAD is `e3ed3f3` with 14
+> commits, not `9286a8d` with eight.)
+>
+> This file was itself first committed at `0296ec0`; the C00.7–C00.13 reconciliation
+> edits landed in the C00.13 approved docs/evidence commit `a0f31c6` (2026-09-30),
+> followed by `70d10f8`, `f074a44`, `183c580`, `2746d7d`, `e3ed3f3`.
 >
 > **C01.06–C01.10 decision records are committed**, not pending. Earlier wording here
 > that called them "uncommitted" was stale.
@@ -66,12 +80,19 @@ file exists — the version lives in `package.json`).
   authorizes `MOLLIE_ALLOW_LIVE=true` only on a future production environment after
   confirmation of a hidden `live_*` key. Verification:
   `docs/evidence/MOLLIE-VERIFICATION.md` (C00.5). Re-verified 2026-09-30: `wrangler.jsonc`
-  `vars` sets `PAYMENT_PROVIDER: "mollie"` and `PAYMENT_PROVIDERS: "mock,mollie"` but
-  **no `MOLLIE_ALLOW_LIVE`**, so staging stays fail-closed.
+  `vars` sets `PAYMENT_PROVIDER: "mollie"` and `PAYMENT_PROVIDERS: "mock,mollie"`, and
+  `MOLLIE_ALLOW_LIVE` is **absent from both `wrangler.jsonc` and `.env.local`**, so staging
+  stays fail-closed.
 - **Live data layer** (`src/lib/backend/db/`): Drizzle schema + lazy Neon client (only
-  connects when `DATABASE_URL` is set). Read-only inspection found the schema already on
-  Neon `boyshop/main`, designated the production candidate in C01.08. No snapshot/test
-  branch exists; future migrations require those safeguards and approval.
+  connects when `DATABASE_URL` is set). C01.08 read-only inspection found the schema
+  already on Neon `boyshop/main`. **Neon `boyshop` is real and IS this fork's production
+  database**: project id `weathered-truth-98011402`, organization
+  `org-round-star-75845352`, default branch `main` = `br-soft-smoke-zar070gn`, region
+  `aws-eu-west-2`, PostgreSQL 18, full storefront schema. The earlier
+  "HTTP 404 project not found" reading was a **faulty lookup** — the project id was
+  already recorded in `.neon`, and C01.00 marked that blocker (B4) **RESOLVED**; it is
+  not stale-by-fork. No snapshot/test branch exists; future migrations require those
+  safeguards and approval.
 - **Catalog facade** (`src/lib/backend/catalog-facade.ts`): live-or-mock dispatch —
   returns the live repository only when `hasDatabase()` is true.
 - **Server cart + guest checkout** (`src/lib/backend/cart`, `orders/`, `api/`):
@@ -89,9 +110,10 @@ file exists — the version lives in `package.json`).
   docs/evidence commit, 2026-09-30): `docs/evidence/MOLLIE-VERIFICATION.md` (C00.5),
   `docs/evidence/GO-LIVE.md` (C00.6), this file (C00.7, corrected C00.13), and the pack
   control files `CURRENT-STATE.md` / `IMPLEMENTATION-MAP.md` / `NEXT.md` /
-  `chunks/00-repo-stabilization/`. Untracked and intentionally **not** committed: two
-  workflow-pack zips, `dev-server.log`, `dev-server.err.log`, and the `references/`
-  MISKI2 source archive (local build/QA artifacts, kept out of the repository).
+  `chunks/00-repo-stabilization/`. The six local build/QA artifacts (two workflow-pack
+  zips, `dev-server.log`, `dev-server.err.log`, and the `references/` MISKI2 zip and its
+  directory) are **gitignored** at `.gitignore:64,65,68,69,74,75` — they are not
+  untracked strays, so the working tree is **clean**.
   *(Corrected C00.7: the previously cited "full tree landed at `140cf921`" and
   "C01.06–C01.10 remains uncommitted" wording was stale — the tree is tracked and
   committed here, and the C01 decision records are committed at HEAD.)*
@@ -99,24 +121,33 @@ file exists — the version lives in `package.json`).
   (go-live) are `QUEUED`.
 - **Payments:** Mollie chosen, but production environment/key-prefix confirmation, flag
   application, and a live E2E payment remain incomplete. Staging stays fail-closed.
-- **Hosting:** Cloudflare Workers staging is deployed and authorized at
-  `boyshop-test.i-janajoe.workers.dev` (`wrangler.jsonc` `PUBLIC_URL`); final brand
+- **Hosting:** Cloudflare Workers staging is authorized at
+  `boyshop-test.i-janajoe.workers.dev` (`wrangler.jsonc` `PUBLIC_URL`); Worker
+  `boyshop-test` `modified_on` **2026-09-22T01:42:07Z**. That deploy **predates this
+  fork's initial import** (`0296ec0`, 2026-09-24), so staging serves the **previous
+  version**: 244 source/config files here are undeployed, and
+  `https://boyshop-test.i-janajoe.workers.dev` returns HTTP 200 but serves **no
+  Miski2/Miski3 markers**. A redeploy is approval-gated (C01.00 blocker B1). Final brand
   domain and production Worker deferred.
-- **No local Cloudflare build evidence.** Neither `.open-next/` nor `.wrangler/` exists
-  in this tree, and both are build/local artifacts, so `deploy:cf` has not been
-  exercised here.
-- **Database:** existing Neon `boyshop/main` is the production candidate; snapshot, test
-  branch, source/database verification, and future-migration approval remain open.
+- **Local Cloudflare build evidence exists:** `npm run build` +
+  `npx opennextjs-cloudflare build` (produces `.open-next/worker.js`) +
+  `npx wrangler deploy --dry-run` (125 assets, 6972.67 KiB, nothing deployed). Neither
+  `.open-next/` nor `.wrangler/` is tracked; both are build/local state.
+- **Database:** Neon `boyshop/main` is this fork's production database (see section 3);
+  snapshot, test branch, source/database verification, and future-migration approval
+  remain open.
 - **No automated E2E suite committed** in-repo. Payment behavior is proven by
   injected-fetch unit tests (Mollie) and the scripted manual E2E precedent (legacy).
 
 ## 5. Handoff review notes (for the receiving party)
 
 - Confirm **no live credentials** in the tree: only `.env.example` is tracked.
-  `.env*.local` is gitignored (`.gitignore:28`); `.env.local` exists locally and defines
-  only `DATABASE_URL`, `DATABASE_URL_UNPOOLED`, `NEON_BRANCH` — no Mollie key material.
-- **`.wrangler/` is gitignored.** `.gitignore` covers `/.open-next/`, `/build`,
-  `/.env*.local`, `.dev.vars*` and QA artifacts, and `.gitignore:10` carries `/.wrangler/`
+  `.env*.local` is gitignored — the anchor moved, it is now `.gitignore:29:.env*.local`
+  (this file previously cited line 28). `.env.local` exists locally and defines only
+  `DATABASE_URL`, `DATABASE_URL_UNPOOLED`, `NEON_BRANCH` — no Mollie key material.
+- **`.wrangler/` is gitignored.** `.gitignore` covers `/.open-next/` (`.gitignore:9`),
+  `/build`, `/.env*.local` (`.gitignore:29`), `.dev.vars*` and QA artifacts, and
+  `.gitignore:10` carries `/.wrangler/`
   (added C00.2) — verified by `git check-ignore -v .wrangler/` →
   `.gitignore:10:/.wrangler/`. The directory does not currently exist, so there is no
   local Wrangler state today; if it were created it would be ignored, not visible.
@@ -140,10 +171,16 @@ file exists — the version lives in `package.json`).
 
 _Last verified: 2026-09-30 (C00.13) against package version `0.11.1` on branch `main`.
 Corrections made in C00.7: cited commits `140cf921` and `d837b0aa` do not exist in this
-repository and were replaced with the real 8-commit table; the "decision/evidence updates
-are uncommitted" wording was corrected (C01.06–C01.10 records are committed at HEAD); the
-page and component inventories were re-verified against actual routes/groups. Corrected in
-C00.13: the C00.7 claim that `.wrangler/` is not gitignored was itself wrong —
+repository and were replaced with the then-current 8-commit table; the "decision/evidence
+updates are uncommitted" wording was corrected (C01.06–C01.10 records are committed at
+HEAD); the page and component inventories were re-verified against actual routes/groups.
+Corrected in C00.13: the C00.7 claim that `.wrangler/` is not gitignored was itself wrong —
 `.gitignore:10` carries `/.wrangler/` (C00.2), verified by `git check-ignore -v
-.wrangler/`. **Release remains BLOCKED.** `BS2Mod-site` is an independent repository, so
-re-read current HEAD before relying on any commit anchor recorded here._
+.wrangler/`. Corrected in C01.01: HEAD is `e3ed3f3` with **14 commits**, not `9286a8d`
+with eight; `.env.local` is ignored at `.gitignore:29`, not `:28`, and the six build/QA
+artifacts are gitignored rather than untracked strays; Neon `boyshop` is this fork's
+production database and the earlier "HTTP 404 project not found" reading is withdrawn as
+a faulty lookup; staging still serves the pre-fork build deployed 2026-09-22; and local
+Cloudflare build evidence does exist. **Release remains BLOCKED.** `BS2Mod-site` is an
+independent repository, so re-read current HEAD before relying on any commit anchor
+recorded here._

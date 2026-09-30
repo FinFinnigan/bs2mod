@@ -2,12 +2,14 @@
 
 Created: 2026-09-22 (C00.5, from scratch).
 Revised: 2026-09-30 (C00.5, C00.4 follow-up) — corrected the `.env.local` existence statements; no other claim changed.
+Revised: 2026-09-30 (C01.01, this fork): corrected the `.env.local` "gitignored, untracked" wording (it is gitignored at `.gitignore:29` via `.env*.local`, so the working tree is clean and there is no stray file), and labelled the `C01.06` / `C01.09` chunk references as pre-fork. The adapter-code, capability, status/event, amount, webhook, refund and test findings below were re-checked against this fork and remain valid; no technical finding changed.
 Provenance: recorded strictly from the three current-tree evidence files listed below. Legacy `C:\dev\BoyShop` copies are historical reference only and were not used.
 
 ## Scope and boundaries
 
-- This document records repository implementation/tests plus the non-secret runtime binding facts inspected in C01.09. It contains no secret values and makes no claim that a live payment succeeded.
-- Payment processing remains **fail-closed for live mode**. C01.06 chose Mollie as the live provider; C01.09 conditionally authorized `MOLLIE_ALLOW_LIVE=true` for a future production environment only. Read-only Cloudflare inspection found `MOLLIE_API_KEY` and `MOLLIE_WEBHOOK_SECRET` secret bindings on staging, but their values/prefixes are hidden and the live flag is absent. Staging must remain fail-closed. Production activation requires operator confirmation of a `live_*` key and a controlled live E2E test; no live key exists in the repository.
+- This document records repository implementation/tests plus the non-secret runtime binding facts inspected in pre-fork C01.09. It contains no secret values and makes no claim that a live payment succeeded.
+- Payment processing remains **fail-closed for live mode**. Pre-fork C01.06 chose Mollie as the live provider; pre-fork C01.09 conditionally authorized `MOLLIE_ALLOW_LIVE=true` for a future production environment only. Read-only Cloudflare inspection found `MOLLIE_API_KEY` and `MOLLIE_WEBHOOK_SECRET` secret bindings on staging, but their values/prefixes are hidden and `MOLLIE_ALLOW_LIVE` is absent from both `wrangler.jsonc` and `.env.local`. Staging must remain fail-closed. Production activation requires operator confirmation of a `live_*` key and a controlled live E2E test; no live key exists in the repository.
+- **Staging serves the pre-fork version.** Worker `boyshop-test` has `modified_on` `2026-09-22T01:42:07Z`, which predates this fork's 2026-09-24 import, so 244 source/config files in this fork are undeployed and the live staging URL returns 200 while serving no Miski2/Miski3 markers. Local build evidence does exist (re-run 2026-09-30): `npm run build`, `npx opennextjs-cloudflare build` producing `.open-next/worker.js`, and `npx wrangler deploy --dry-run` reporting 125 assets, 6972.67 KiB, nothing deployed.
 - No secrets appear in this document. The only key material referenced is public test fixture data that already lives in the committed test file.
 
 ## Evidence files
@@ -120,7 +122,7 @@ Mollie vocabulary is allowed only inside the adapter; it maps into neutral `Paym
 ## E2E verification script (`verify-e2e-payment.cjs`)
 
 - Purpose: verify the E2E payment webhook result — fetch order + payment + transitions for the order created via the deployed API E2E flow.
-- Inputs: loads `DATABASE_URL` from `.env.local` when that file exists (existing env vars are never overwritten). **A local `.env.local` now does exist** (C00.4, re-verified 2026-09-30: 343 B, 2026-09-24, gitignored, untracked) and defines `DATABASE_URL`, `DATABASE_URL_UNPOOLED`, `NEON_BRANCH` — no Mollie key material, and no values are reproduced here. Order id from `ORDER_ID` env, else argv[2], else the E2E default `ord_56058dfa7b8cd442f0fe6f3e27023e3b`.
+- Inputs: loads `DATABASE_URL` from `.env.local` when that file exists (existing env vars are never overwritten). **A local `.env.local` now does exist** (C00.4, re-verified 2026-09-30: 343 B, 2026-09-24, gitignored at `.gitignore:29` via the `.env*.local` rule, so it is deliberately not a stray or untracked file and the working tree stays clean) and defines `DATABASE_URL`, `DATABASE_URL_UNPOOLED`, `NEON_BRANCH` — no Mollie key material, and no values are reproduced here. Order id from `ORDER_ID` env, else argv[2], else the E2E default `ord_56058dfa7b8cd442f0fe6f3e27023e3b`.
 - Queries (via `@neondatabase/serverless`):
   - `orders` — `id, status, total, currency, created_at, updated_at`
   - `payments` — `id, order_id, provider_id, provider_ref, status, amount, currency, idempotency_key, created_at, updated_at` ordered by `created_at`
@@ -130,6 +132,6 @@ Mollie vocabulary is allowed only inside the adapter; it maps into neutral `Paym
 
 ## Open gaps / not documented here
 
-- **Live-mode behavior is NOT verified.** No live Mollie transaction, live webhook, or production settlement has been exercised. C01.09 is conditional authorization only, not verification or activation.
+- **Live-mode behavior is NOT verified.** No live Mollie transaction, live webhook, or production settlement has been exercised. Pre-fork C01.09 is conditional authorization only, not verification or activation.
 - The adapter has not been exercised against the real Mollie API in this tree; all HTTP behavior is proven by injected-fetch tests only.
 - End-to-end script execution requires `DATABASE_URL` (supplied by the local `.env.local` that now exists, or any equivalent environment source) **and** an order created by a prior deployed E2E flow. The `DATABASE_URL` half of that prerequisite is satisfied; the prior E2E order is not present in this tree, so the script has not been observed to complete a full result here.
