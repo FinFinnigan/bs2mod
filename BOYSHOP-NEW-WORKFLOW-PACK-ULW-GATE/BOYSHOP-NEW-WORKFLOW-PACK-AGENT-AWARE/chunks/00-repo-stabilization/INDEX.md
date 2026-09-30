@@ -16,7 +16,7 @@
 14. C00.13 approved commit — DONE (commit `a0f31c6`, 13 files, regression green)
 
 Phase 00 exit intent met: repository truth, metadata, docs, evidence and Git scope are trustworthy.
-Next phase: 01 — Existing release blockers. First chunk: `chunks/01-existing-release-blockers/C01.00-release-blocker-recon.md` (read-only).
+Next phase: 01 — Existing release blockers. `C01.00-release-blocker-recon.md` (read-only) is COMPLETE; the current chunk is `chunks/01-existing-release-blockers/C01.01-evidence-docs-fork-reconciliation.md` (docs only).
 
 This is not a blind queue. Every closeout may skip/split/insert/reorder future chunks when repository evidence warrants it.
 Every chunk launch reruns agent-aware routing.
