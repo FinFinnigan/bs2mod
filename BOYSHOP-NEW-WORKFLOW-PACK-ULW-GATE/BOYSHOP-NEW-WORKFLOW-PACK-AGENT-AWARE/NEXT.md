@@ -19,7 +19,9 @@ Phase 00 (repo stabilization) is **COMPLETE**. C00.13 closed it with commit `a0f
 - **F1 RESOLVED**: `docs/evidence/HANDOFF.md` no longer claims `.wrangler/` is "not gitignored"; it now matches `.gitignore:10` (`/.wrangler/`, confirmed via `git check-ignore -v .wrangler/`) and records the C00.5–C00.13 docs/evidence commit.
 - **F2 still OPEN by design**: the 6 local artifacts (2 zips, 2 logs, MISKI2 zip + dir) remain untracked and NOT gitignored, so explicit-path staging stays mandatory.
 
-Repo state after the commit: `BS2Mod-site` `main` is 1 commit ahead of `origin/main` (`a0f31c6`, **not pushed**); `C:\dev` is 2 commits ahead (**not pushed**). Neither push is authorized.
+Repo state: `BS2Mod-site` `main` is **in sync with `origin/main`** and fully pushed. HEAD is `70d10f8` ("Phase 00 closeout: sync control docs to commit `a0f31c6`; open phase 01 with C01.00 recon"), which contains `a0f31c6`. Verified against the live remote with `git ls-remote origin refs/heads/main` → `70d10f8`, identical to local HEAD; `git log origin/main..HEAD` is empty. **There is nothing left to push in this repository.**
+
+`C:\dev` is a **different repository belonging to different projects** (`origin FinFinnigan/dev.git`; it holds Clix, GPP-site, Helios, leroy, Microsites). It no longer contains this project — commit `01ef174c` untracked all 481 `BS2Mod-site/**` paths, and `git ls-files -- BS2Mod-site` there now returns zero files. Its 2 unpushed commits belong to GPP and to that untracking itself. **They are out of scope for this project and must not be pushed as part of BS2Mod-site work.**
 
 C01.00 is READ-ONLY: it re-verifies every release blocker against live repo truth, records proof / approval-gate status / what each blocker gates, orders them by dependency, and generates only the tiny phase-01 chunks the evidence justifies. It is **not** the broad release audit and does not authorize a deploy, push, live payment activation, or DB migration.
 
@@ -34,4 +36,4 @@ After C01.00:
 - rewrite `NEXT.md`;
 - STOP.
 
-Still open and outside these chunks, each needing its own approval: pushing `BS2Mod-site` and pushing `C:\dev` to `origin/main`; the Cloudflare rebuild / `preview:cf` before any deploy (the staging Worker is stale and no local build evidence exists); `MOLLIE_ALLOW_LIVE=true`; any live DB migration.
+Still open and outside these chunks, each needing its own approval: the Cloudflare rebuild / `preview:cf` before any deploy (the staging Worker is stale and no local build evidence exists); `MOLLIE_ALLOW_LIVE=true`; any live DB migration. **Pushing `BS2Mod-site` is no longer an open item — it is done and verified in sync.** Any future `C:\dev` push belongs to other projects and is out of scope here.
