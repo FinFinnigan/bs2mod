@@ -1,6 +1,7 @@
 # Mollie payment adapter — verification evidence
 
 Created: 2026-09-22 (C00.5, from scratch).
+Revised: 2026-09-30 (C00.5, C00.4 follow-up) — corrected the `.env.local` existence statements; no other claim changed.
 Provenance: recorded strictly from the three current-tree evidence files listed below. Legacy `C:\dev\BoyShop` copies are historical reference only and were not used.
 
 ## Scope and boundaries
@@ -119,7 +120,7 @@ Mollie vocabulary is allowed only inside the adapter; it maps into neutral `Paym
 ## E2E verification script (`verify-e2e-payment.cjs`)
 
 - Purpose: verify the E2E payment webhook result — fetch order + payment + transitions for the order created via the deployed API E2E flow.
-- Inputs: loads `DATABASE_URL` from `.env.local` when that file exists (existing env vars are never overwritten; no such file exists in the tree today); order id from `ORDER_ID` env, else argv[2], else the E2E default `ord_56058dfa7b8cd442f0fe6f3e27023e3b`.
+- Inputs: loads `DATABASE_URL` from `.env.local` when that file exists (existing env vars are never overwritten). **A local `.env.local` now does exist** (C00.4, re-verified 2026-09-30: 343 B, 2026-09-24, gitignored, untracked) and defines `DATABASE_URL`, `DATABASE_URL_UNPOOLED`, `NEON_BRANCH` — no Mollie key material, and no values are reproduced here. Order id from `ORDER_ID` env, else argv[2], else the E2E default `ord_56058dfa7b8cd442f0fe6f3e27023e3b`.
 - Queries (via `@neondatabase/serverless`):
   - `orders` — `id, status, total, currency, created_at, updated_at`
   - `payments` — `id, order_id, provider_id, provider_ref, status, amount, currency, idempotency_key, created_at, updated_at` ordered by `created_at`
@@ -131,4 +132,4 @@ Mollie vocabulary is allowed only inside the adapter; it maps into neutral `Paym
 
 - **Live-mode behavior is NOT verified.** No live Mollie transaction, live webhook, or production settlement has been exercised. C01.09 is conditional authorization only, not verification or activation.
 - The adapter has not been exercised against the real Mollie API in this tree; all HTTP behavior is proven by injected-fetch tests only.
-- End-to-end script execution requires `DATABASE_URL` supplied via environment (e.g. a local `.env.local` if the operator creates one; no such file exists in the tree today) and an order created by a prior deployed E2E flow.
+- End-to-end script execution requires `DATABASE_URL` (supplied by the local `.env.local` that now exists, or any equivalent environment source) **and** an order created by a prior deployed E2E flow. The `DATABASE_URL` half of that prerequisite is satisfied; the prior E2E order is not present in this tree, so the script has not been observed to complete a full result here.

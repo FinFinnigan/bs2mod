@@ -1,18 +1,39 @@
 # GO LIVE — BoyShop / BS2Mod
 
-> **Status: PRE-LAUNCH — RELEASE BLOCKED.** Created from scratch (C00.6) from current
-> repo evidence only. The storefront tree exists and builds locally on the mock data
-> layer. The full BoyShop tree landed in the shared `C:\dev` repository at `140cf921`
-> (C01.05). Later shared-monorepo commits may advance `main`; `140cf921` remains the
-> BoyShop landing commit. C01.06–C01.09 recorded production-direction decisions, but
-> release phases 21–23 and the remaining safety checks are incomplete.
+> **Status: PRE-LAUNCH — RELEASE BLOCKED.** Updated to current committed repository
+> state (C00.6). The storefront tree exists and builds locally on the mock data layer.
+>
+> **Commit anchors (corrected 2026-09-30, C00.6).** This document previously named
+> `140cf921` (C01.05 full-tree landing) and `d837b0aa` (initial evidence commit) as
+> anchors. **Neither commit exists in this repository** — `git cat-file -t` rejects
+> both, and neither appears in `git log --all`. They belong to an external/shared
+> history that is not this Git repository. `BS2Mod-site` is its own Git repository
+> (`git rev-parse --show-toplevel` → `C:/dev/BS2Mod-site`) and its only real history is:
+>
+> | Commit | Subject |
+> |---|---|
+> | `9286a8d` | **Current HEAD** — workflow-pack swap to ULW-GATE + product actions/form/tests (C00.4 closeout) |
+> | `988f7f4` | Merge `codex/miski2-theme` |
+> | `7fa927c` | C02.04 closeout doc sync |
+> | `59a6bb4` | Authoritative variant-stock availability rule (C02.04) |
+> | `bbfa6af` | Miski3 storefront theme |
+> | `5c86e1d` | Miski2 storefront theme |
+> | `0296ec0` | Initial import of BS2Mod-site (first commit that carries `docs/evidence/*`) |
+> | `0342c4c` | Initial commit |
+>
+> **C01.06–C01.10 decision records are committed**, not pending: `docs/evidence/*`
+> (CHANGELOG, GO-LIVE, PROJECT-STATE, HANDOFF, MOLLIE-VERIFICATION) are tracked and
+> clean at HEAD apart from the C00.5 Mollie correction noted below. Earlier wording in
+> this document that called them "uncommitted" was stale.
+>
+> Release phases 21–23 and the remaining safety checks are still incomplete.
 
 ## 1. What is being deployed
 
 A premium, mobile-first boys-clothing ecommerce storefront ("BoyShop / BS2Mod"):
 
-- **Storefront** — Next.js 15 (App Router) + React 19 + TypeScript. Plain CSS.
-  Backend-agnostic; renders from the mock data layer with no configuration.
+- **Storefront** — Next.js `^15.1.6` (App Router) + React `^19.0.0` + TypeScript.
+  Plain CSS. Backend-agnostic; renders from the mock data layer with no configuration.
 - **Backend** — provider-neutral payment layer (`PaymentProvider` port + registry),
   live data layer (Drizzle + Neon when `DATABASE_URL` is set; memory/mock fallback
   otherwise), server cart, guest checkout, config/feature flags, admin bootstrap.
@@ -21,8 +42,9 @@ A premium, mobile-first boys-clothing ecommerce storefront ("BoyShop / BS2Mod"):
   - Cloudflare Workers via OpenNext (`open-next.config.ts`, `wrangler.jsonc`,
     script `deploy:cf`) — `boyshop-test` is deployed as the authorized staging target
   - Netlify (`netlify.toml`: `npm run build`, publish `.next`) — not selected
-- **Canonical package version `0.11.1`** (C00.3 verified: `package.json` ==
-  `package-lock.json`; no `VERSION` file exists).
+- **Canonical package version `0.11.1`** (C00.3 verified and re-verified 2026-09-30
+  in C00.6: `package.json` `version` and `package-lock.json` `version` both `0.11.1`;
+  no `VERSION` file exists).
 
 ## 2. What you need before you start
 
@@ -30,10 +52,14 @@ A premium, mobile-first boys-clothing ecommerce storefront ("BoyShop / BS2Mod"):
   the storefront runs on the mock data layer when no `DATABASE_URL` is set.
 - **Gates:** `npm run typecheck` (tsc --noEmit), `npm run lint` (fails build — ESLint
   gate is on in `next.config.mjs`), `npm run test` (vitest), `npm run build` (next build).
-- `[x]` **Full repository tree landed.** C01.05 committed the BoyShop tree at
-  `140cf921` using explicit-path staging; the workflow-pack zip remains intentionally
-  untracked. Current decision/evidence edits are not committed yet and need a separate
-  commit approval.
+- `[x]` **Full repository tree landed and tracked.** The `BS2Mod-site/` tree is committed
+  in this repository; the newest commit is `9286a8d` (C00.4 closeout). The workflow-pack
+  zip remains intentionally untracked. *(Corrected C00.6: the previously cited landing
+  commit `140cf921` is not an object in this repository.)*
+- `[~]` **Decision/evidence records committed; one doc correction pending approval.**
+  C01.06–C01.10 records are committed at HEAD. The only uncommitted evidence edit is
+  C00.5's correction to `docs/evidence/MOLLIE-VERIFICATION.md`, which needs a separate
+  explicit commit approval (Git commits are not self-authorized).
 - `BLOCKER` — **No release authorization.** Phases 21 (release audit), 22 (production)
   and 23 (go-live) are all `QUEUED`; go-live is explicitly not authorized.
 - `USER ACTION REQUIRED` — **Payments:** mock remains the verified safe default. C01.06
@@ -172,9 +198,12 @@ been audited for production; production monitoring remains phase-22 work.
 
 ## 17. Rollback
 
-Code rollback can anchor to full-tree commit `140cf921` (C01.05), but subsequent
-decision/evidence updates remain uncommitted. Database rollback is not ready because
-Neon has no restore snapshot. Production rollback procedures remain undocumented.
+Code rollback anchors to this repository's real history. The current release-bearing
+HEAD is `9286a8d`; the full-tree import is `0296ec0`. *(Corrected C00.6: the previously
+cited `140cf921` is not an object in this repository and cannot be a rollback target
+here.)* The C00.5 Mollie correction in the working tree is uncommitted, so it is not
+protected by any anchor until approved and committed. Database rollback is not ready
+because Neon has no restore snapshot. Production rollback procedures remain undocumented.
 
 ## 18. Go / No-Go checklist
 
@@ -183,9 +212,10 @@ Neon has no restore snapshot. Production rollback procedures remain undocumented
 - `[x]` Version metadata aligned (`0.11.1`, C00.3)
 - `[x]` Mollie payment adapter verified against its code/test evidence
   (`docs/evidence/MOLLIE-VERIFICATION.md`, C00.5)
-- `[x]` **Full-tree committed repository state** — landed at `140cf921` (C01.05;
-  workflow-pack zip intentionally excluded)
-- `[ ]` C01.06–C01.10 decision/evidence updates committed under separate approval
+- `[x]` **Full-tree committed repository state** — `BS2Mod-site/` tree tracked and
+  committed in this repository; HEAD `9286a8d` (workflow-pack zip intentionally excluded)
+- `[~]` C01.06–C01.10 decision/evidence records **committed** at HEAD; the C00.5
+  Mollie doc correction is uncommitted and needs separate commit approval
 - `[ ]` Payment provider activated for production (Mollie live chosen C01.06;
   C01.09 conditional switch approval recorded; activation pending production environment,
   confirmed `live_*` secret, flag application, and live E2E)
@@ -204,12 +234,12 @@ Neon has no restore snapshot. Production rollback procedures remain undocumented
 
 | Blocker | Why | Who must act | Action | Verification |
 | ------- | --- | ------------ | ------ | ------------ |
-| Decision/evidence updates uncommitted | C01.06–C01.10 records are unstaged working-tree changes | CEO | Verify scope/secrets, then explicitly approve a documentation commit | Exact intended docs committed; zip excluded |
+| Working tree not clean | C00.5's `docs/evidence/MOLLIE-VERIFICATION.md` correction, this C00.6 GO-LIVE update, and three pack files are uncommitted; the zips and logs are untracked | CEO | Verify scope/secrets, then explicitly approve a documentation commit | Intended docs committed; zips/logs excluded |
 | Release not authorized | Phases 21/22/23 `QUEUED` | CEO | Run release audit, production prep, go-live phases | Phase statuses DONE |
-| Live payment not activated | Mollie live chosen (C01.06); C01.09 conditionally authorized the flag, but staging remains fail-closed, production environment/key verification and live E2E are pending | CEO / operator | Create production environment, confirm hidden key is `live_*`, apply flag there only, run live E2E | Live payment E2E test PASS |
+| Live payment not activated | Mollie live chosen (C01.06); C01.09 conditionally authorized the flag, but staging remains fail-closed (`wrangler.jsonc` `vars` sets no `MOLLIE_ALLOW_LIVE`), and production environment/key verification and live E2E are pending | CEO / operator | Create production environment, confirm hidden key is `live_*`, apply flag there only, run live E2E | Live payment E2E test PASS |
 | No production domain/hosting | Staging authorized on workers.dev (C01.07); final brand domain not chosen; no zone bound to this Worker | CEO | Decide + authorize the final hostname (later phase) | Custom domain serves over HTTPS |
 | Database migration safety incomplete | Existing `boyshop/main` already has the schema, but no restore snapshot or test branch exists | CEO | Snapshot, branch, verify, test, then separately authorize any future migration | Snapshot + test branch + verified schema match |
-| Canonical docs exist | Initial versions committed at `d837b0aa`; synchronized through C01.10 in the working tree | CEO | Commit the synchronized records after verification | Current docs committed without secrets |
+| No local Cloudflare build evidence | `/.open-next/` and `.wrangler/` are gitignored and no local CF build output exists, so `deploy:cf` has not been exercised from this tree | Operator | Build + `preview:cf` locally before any deploy, under approval gates | Successful local `opennextjs-cloudflare build` |
 
 _Historical note: the five canonical docs (CHANGELOG, GO-LIVE, PROJECT-STATE,
 TEAM-3-HANDOFF, TEAM-1-HANDOFF) previously existed only in legacy `C:\dev\BoyShop` and
@@ -218,8 +248,9 @@ recreated from scratch under `BS2Mod-site/docs/evidence/` (C00.5–C00.9)._
 
 ## 20. Product is LIVE when
 
-- `[x]` Full `BS2Mod-site/` tree landed at `140cf921` (C01.05)
-- `[ ]` Current decision/evidence updates committed
+- `[x]` Full `BS2Mod-site/` tree tracked and committed in this repository (HEAD `9286a8d`)
+- `[~]` Current decision/evidence records committed; the C00.5 Mollie correction and this
+  C00.6 update still need separate commit approval
 - `[ ]` Release audit passed (phase 21)
 - `[ ]` Production systems prepared under approval gates (phase 22)
 - `[ ]` Authorized go-live performed with production smoke tests PASS (phase 23)
@@ -231,7 +262,11 @@ recreated from scratch under `BS2Mod-site/docs/evidence/` (C00.5–C00.9)._
 
 ---
 
-_Last verified: 2026-09-23 (0.11.1). Initial evidence landed at `d837b0aa`; the full
-BoyShop tree landed at `140cf921`; C01.06–C01.10 synchronized decisions remain
-uncommitted. Shared-monorepo `main` advances independently, so re-read current HEAD and
-retain `140cf921` as the BoyShop landing reference._
+_Last verified: 2026-09-30 (C00.6), against package version `0.11.1` on branch `main` at
+HEAD `9286a8d`. Corrections made in C00.6: the cited landing commit `140cf921` and
+initial-evidence commit `d837b0aa` do not exist in this repository (`git cat-file -t`
+rejects both; absent from `git log --all`), so this repository is its own history —
+root `C:\dev\BS2Mod-site`, full-tree import `0296ec0`. C01.06–C01.10 decision records are
+committed at HEAD, not pending. **Release remains BLOCKED.** `BS2Mod-site` is an
+independent repository, so re-read current HEAD before relying on any commit anchor
+recorded here._

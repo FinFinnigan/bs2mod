@@ -1,9 +1,9 @@
 # CHANGELOG — BoyShop / BS2Mod
 
-> **Status: PRE-LAUNCH — RELEASE BLOCKED.** Created from scratch (C00.8) from current
-> repo evidence only. The full BoyShop tree is committed at `140cf921` (C01.05), but
-> no release has been authorized or tagged. C01.06–C01.10 decision/evidence updates
-> remain uncommitted.
+> **Status: PRE-LAUNCH — RELEASE BLOCKED.** This document was created from repository
+> evidence only and reconciled in C00.8. `BS2Mod-site` has its own Git history with
+> eight commits; the current recorded revision is `9286a8d`. No release has been
+> authorized or tagged. C01.06–C01.10 decision/evidence records are committed at HEAD.
 > This changelog records the state of the working tree and the work that has actually
 > landed (stabilization + evidence); it invents **no** version numbers. No release
 > commit/tag/push happens without CEO approval, so nothing below is a released version.
@@ -13,8 +13,9 @@
 - **One entry per released version** once releases happen (post full-tree commit +
   phases 21–23).
 - Today there are **zero released versions**. The single entry below describes the
-  working tree at canonical version `0.11.1` (full tree committed at `140cf921`;
-  current decision/evidence updates uncommitted).
+  working tree at canonical version `0.11.1`; current decision/evidence records are
+  committed at HEAD, while the phase-00 evidence corrections remain uncommitted pending
+  approval.
 - **Versioning policy:** semantic versioning. The canonical version lives in
   `package.json` (== `package-lock.json`, verified by C00.3). New versions are only
   recorded here when a release is actually authorized — never earlier.
@@ -22,7 +23,7 @@
   legacy `C:\dev\BoyShop\CHANGELOG.md` and are **reference-for-shape only, never
   copied as fact** (C00.4).
 
-## [Unreleased] — 0.11.1 (full tree at `140cf921`; decision records uncommitted)
+## [Unreleased] — 0.11.1
 
 Canonical package version `0.11.1` (C00.3 verified: `package.json` ==
 `package-lock.json` top-level and root entry; no `VERSION` file exists).
@@ -72,22 +73,23 @@ Local verification gates (mock data, no env vars): `npm run typecheck` 0 errors,
 
 ### Changed — phase 01 release-blocker reconciliation
 
-- C01.05: full tree committed at `140cf921` (478 files; zip excluded).
+- `BS2Mod-site` is a standalone repository. Its actual recorded history contains eight
+  commits, from `0342c4c` through current HEAD `9286a8d`; previously cited commit
+  anchors are not present in this repository.
 - C01.06: Mollie chosen as the future live provider; not activated.
 - C01.07: Cloudflare Workers staging authorized; final brand domain deferred.
 - C01.08: existing Neon `boyshop/main` designated production candidate; database
   snapshot/test-branch/schema-verification gates remain open.
 - C01.09: `MOLLIE_ALLOW_LIVE=true` conditionally authorized for a future production
   environment only; absent on staging; hidden `live_*` key confirmation + live E2E required.
-- C01.10: evidence synchronized to repository and live account truth.
+- C01.10: decision/evidence records are committed at HEAD.
 
 ### Changed — phase 00 repo stabilization (C00.1–C00.10b, landed)
 
-- Repo reality check performed (C00.1, read-only): git root is `C:\dev`;
-  `BS2Mod-site/` has no own `.git`; at that time it was entirely untracked with HEAD
-  `d7ee42bf` (an unrelated GPP-site commit).
-- `.gitignore` hardened (C00.2): `.open-next/` added to `BS2Mod-site/.gitignore`
-  (line 9); `.wrangler/` already ignored by `C:\dev\.gitignore` (lines 26–27).
+- Repo reality check: `BS2Mod-site` is its own Git repository, rooted at
+  `C:\dev\BS2Mod-site`.
+- `.gitignore` hardening (C00.2): `/.open-next/` and `/.wrangler/` are both ignored
+  directly by this repository.
 - Version metadata aligned to canonical `0.11.1` (C00.3) — `package.json` ==
   `package-lock.json`; no version drift found/corrected beyond this.
 - Stale-paperwork audit (C00.4, read-only): the five canonical docs (CHANGELOG,
@@ -99,17 +101,12 @@ Local verification gates (mock data, no env vars): `npm run typecheck` 0 errors,
     injected-fetch unit tests; live mode is fail-closed.
   - `GO-LIVE.md` (C00.6) — operations handoff skeleton; verdict **RELEASE BLOCKED**.
   - `HANDOFF.md` (C00.7) — team/state handoff; same verdict.
-  - `CHANGELOG.md` (C00.8) — this document.
+  - `CHANGELOG.md` (C00.8) — this document, reconciled to the repository's actual
+    commit history.
 - No secrets introduced: only `.env.example` is in the tree; `.env*.local` and
   `.wrangler/` are gitignored.
-- Cloudflare evidence audit + follow-up (C00.10 → C00.10b): deploy config clean and
-  Git-suitable; `.wrangler/` + `.open-next/` verified git-ignored; `.dev.vars` +
-  `.dev.vars.*` added to `BS2Mod-site/.gitignore` (lines 33–36) guarding local
-  secrets; `.dev.vars.example` kept trackable. Verified via `git check-ignore` and
-  temporary-file probes.
-- Evidence docs committed (C00.13, CEO-approved): commit `d837b0aa` — exactly the five
-  evidence docs under `BS2Mod-site/docs/evidence/` (629 insertions), staged by
-  explicit path only; no secrets in the staged diff.
+- C00.10 through C00.13 remain deferred. No evidence-document commit has been made in
+  this repository for the current phase-00 corrections.
 
 ## Historical reference (pre-BS2Mod-site)
 
@@ -120,7 +117,6 @@ canonical record for `BS2Mod-site/` starts with this document.
 
 ---
 
-_Last verified: 2026-09-23 (0.11.1). Initial evidence landed at `d837b0aa`; full tree
-landed at `140cf921`; C01.06–C01.10 records remain uncommitted. No release/tag exists.
-Release remains blocked pending acceptance, documentation commit approval, and phases
-21–23. Shared-monorepo HEAD advances independently._
+_Last verified: 2026-09-30 (0.11.1). Current HEAD is `9286a8d`; the repository has
+eight recorded commits. No release or tag exists. Release remains blocked pending
+acceptance, documentation-commit approval, and phases 21–23._

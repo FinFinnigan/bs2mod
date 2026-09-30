@@ -1,19 +1,24 @@
 # PROJECT STATE — BoyShop / BS2Mod
 
-> **Status: PRE-LAUNCH — RELEASE BLOCKED.** Source: created from scratch (C00.9).
-> Refreshed: 2026-09-23. Initial evidence landed at `d837b0aa`; the full BoyShop tree
-> landed at `140cf921` (C01.05). C01.06–C01.10 decisions are synchronized in the
-> working tree but not committed. Release phases 21–23 remain unauthorized.
+> **Status: PRE-LAUNCH — RELEASE BLOCKED.** Source: created from scratch (C00.9);
+> reconciled to repository truth in C00.9. Refreshed: 2026-09-30. `BS2Mod-site` is its
+> own Git repository with exactly eight commits; the current recorded revision is
+> `9286a8d`. C01.06–C01.10 decision/evidence records are committed at HEAD; the
+> phase-00 evidence corrections (C00.2, C00.5–C00.9) remain uncommitted pending
+> approval. Release phases 21–23 remain unauthorized.
 
 ## 1. Repository truth
 
-- Git repository root is `C:\dev`; `BS2Mod-site/` has no `.git` of its own.
-- `BS2Mod-site/` is tracked inside `C:\dev` as of full-tree commit `140cf921`; the
-  workflow-pack zip is intentionally excluded and remains untracked. Current evidence
-  edits require a separate approved commit.
-- Current `main` HEAD advances with unrelated `C:\dev` commits (it was `d7ee42bf` when
-  this document was first drafted) — re-read live with `git rev-parse --short HEAD`;
-  do not hardcode a HEAD value. Documentation expecting `026e70ad` / `5ed1e84` is stale.
+- `BS2Mod-site` is its own Git repository: it has its own `.git`, and
+  `git rev-parse --show-toplevel` returns `C:/dev/BS2Mod-site`. Earlier claims that it
+  had no repository of its own and was tracked inside `C:\dev` were stale.
+- The repository history is exactly eight commits, from `0342c4c` through current HEAD
+  `9286a8d` "BS2Mod: Swap workflow pack to ULW-GATE + product actions/form/tests
+  (C00.4 closeout)". Previously cited anchors (`140cf921`, `d837b0aa`, `5ed1e84`,
+  `026e70ad`, `d7ee42bf`) are **absent** from this repository (rejected by
+  `git cat-file -t`; absent from `git log --all`), confirmed by C00.6–C00.9.
+- Do not hardcode `main` HEAD; re-read it live with `git rev-parse --short HEAD`. The
+  uncommitted phase-00 evidence edits require a separate approved commit.
 
 ## 2. Canonical version
 
@@ -63,10 +68,11 @@
 
 ## 6. Phase 00 stabilization status
 
-- C00.1 — repo reality check (read-only): git root `C:\dev`, `BS2Mod-site/`
-  untracked, HEAD at the time `d7ee42bf` — rework.
-- C00.2 — `.gitignore` hardened (`.open-next/` added to `BS2Mod-site/.gitignore`;
-  `.wrangler/` already ignored by `C:\dev\.gitignore`) — verified.
+- C00.1 — repo reality check (read-only): originally recorded git root `C:\dev` with
+  `BS2Mod-site/` untracked — later found stale and reworked by C00.6–C00.9.
+- C00.2 — `.gitignore` hardened: C00.2 added exactly `/.wrangler/` to
+  `BS2Mod-site/.gitignore`, beside the existing `/.open-next/` rule; both now match
+  `git check-ignore -v` — verified.
 - C00.3 — version metadata aligned to canonical `0.11.1` — verified.
 - C00.4 — stale-paperwork audit (read-only): five canonical docs existed only in
   legacy `C:\dev\BoyShop` — closed.
@@ -74,15 +80,19 @@
 - C00.6 — `GO-LIVE.md` created from scratch — created.
 - C00.7 — `HANDOFF.md` created from scratch — created.
 - C00.8 — `CHANGELOG.md` created from scratch — created.
-- C00.9 — this document (`PROJECT-STATE.md`) created from scratch.
-- C00.10 — Cloudflare evidence audit (READ ONLY): deploy config clean and Git-suitable; `.wrangler/` + `.open-next/` verified git-ignored; found `.dev.vars` unguarded — verified.
-- C00.10b — `.dev.vars` + `.dev.vars.*` added to `BS2Mod-site/.gitignore` (lines 33–36); `.dev.vars.example` kept trackable; verified via `git check-ignore` + temp-file probe — verified.
+- C00.9 — this document (`PROJECT-STATE.md`); created from scratch, then reconciled to
+  the standalone repository's real history in C00.9.
+- C00.10 — Cloudflare evidence audit (READ ONLY) — **DEFERRED, still open** per
+  `NEXT.md`; the deploy-config review has not been completed in this phase.
+- C00.10b — `.dev.vars` guard: `BS2Mod-site/.gitignore` at HEAD already ignores
+  `.dev.vars` and `.dev.vars.*` and keeps `.dev.vars.example` trackable; recorded here
+  for completeness, not tracked as a separate open chunk in `NEXT.md`.
 
 ## 7. Go-live blockers
 
 | Blocker | Why | Who must act | Action |
 | ------- | --- | ------------ | ------ |
-| Decision/evidence updates uncommitted | Full tree landed at `140cf921`; C01.06–C01.10 records remain working-tree edits | CEO | Verify and approve exact documentation commit |
+| Decision/evidence updates uncommitted | C01.06–C01.10 records are committed at HEAD `9286a8d`; the phase-00 evidence corrections (C00.2, C00.5–C00.9) remain working-tree edits | CEO | Verify and approve exact documentation commit |
 | Release not authorized | Phases 21/22/23 `QUEUED` | CEO | Run release audit, production prep, go-live phases |
 | Live payment not activated | Mollie chosen and flag conditionally authorized, but staging stays fail-closed; production/key confirmation/live E2E pending | CEO / operator | Prepare production, confirm `live_*`, apply flag there, run live E2E |
 | No live domain/hosting | Staging authorized on workers.dev (C01.07: Cloudflare Workers, `boyshop-test.i-janajoe.workers.dev`); final brand domain deferred | CEO | Decide + authorize the final hostname (later phase) |
@@ -91,10 +101,11 @@
 
 ## 8. Next steps
 
-1. Run C01.99 acceptance after C01.10 evidence synchronization.
-2. Verify and obtain CEO approval for the exact decision/evidence documentation commit.
-3. Keep phases 21–23 `QUEUED` until their own authorization and safeguards are met.
-4. Production preparation must close the payment, final-domain, database-safety,
+1. Finish phase-00 stabilization: deferred-but-open C00.10 (Cloudflare evidence audit),
+   C00.11 (ownership decision), C00.12 (pre-commit verification), and C00.13 (approved
+   commit; explicit user approval is required before any commit).
+2. Keep phases 21–23 `QUEUED` until their own authorization and safeguards are met.
+3. Production preparation must close the payment, final-domain, database-safety,
    monitoring, and rollback blockers listed above.
 
 ## Historical reference
@@ -106,7 +117,8 @@ for `BS2Mod-site/` starts with the evidence docs created from scratch this phase
 
 ---
 
-_Last verified vs repository/account state: 2026-09-23 (0.11.1). Initial evidence
-landed at `d837b0aa`; the full tree landed at `140cf921`; C01.06–C01.10 records remain
-uncommitted. Release stays BLOCKED pending acceptance, documentation commit approval,
-and phases 21–23. Shared-monorepo HEAD advances independently._
+_Last verified vs repository/account state: 2026-09-30 (0.11.1). The repository has
+exactly eight recorded commits; the current HEAD is `9286a8d`. C01.06–C01.10 records
+are committed at HEAD; the phase-00 evidence corrections (C00.2, C00.5–C00.9) remain
+uncommitted pending approval. Release stays BLOCKED pending acceptance,
+documentation-commit approval, and phases 21–23._

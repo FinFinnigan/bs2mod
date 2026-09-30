@@ -10,9 +10,10 @@
 8. C00.8 CHANGELOG
 9. C00.9 PROJECT-STATE
 10. C00.10 Cloudflare evidence audit
-11. C00.11 ownership decision
-12. C00.12 pre-commit verification
-13. C00.13 approved commit
+11. C00.14 nested-repo boundary decision (inserted by C00.10 evidence; runs ahead of C00.11)
+12. C00.11 ownership decision
+13. C00.12 pre-commit verification
+14. C00.13 approved commit
 
 This is not a blind queue. Every closeout may skip/split/insert/reorder future chunks when repository evidence warrants it.
 Every chunk launch reruns agent-aware routing.

@@ -1,31 +1,37 @@
 # CURRENT-STATE — BoyShop / BS2Mod
 
-Last refreshed: 2026-09-24 (C00.4 stale-paperwork audit)
+Last refreshed: 2026-09-30 (C00.12 pre-commit verification — verification only, no commit)
 
 ## Active phase
 Phase 00 — Repo stabilization
 
-## Verified repo truth (2026-09-24)
-- `BS2Mod-site` is now its own git repository (own `.git`; `rev-parse --show-toplevel` → `C:/dev/BS2Mod-site`)
-- branch `main`, HEAD `988f7f4` (merge of `codex/miski2-theme`); nested history: initial import, Miski2/Miski3 themes, C02.04 closeout
-- doc-claimed parent-landing commit `140cf921` (and `5ed1e84`, `026e70ad`) are NOT present in this nested repo
-- `package.json` + `package-lock.json` both `0.11.1`; no `VERSION` file (version lives in `package.json`); working tree clean for both
-- `docs/evidence/*` (HANDOFF, PROJECT-STATE, CHANGELOG, GO-LIVE, MOLLIE-VERIFICATION) are COMMITTED and clean at HEAD; status PRE-LAUNCH / release blocked
-- synchronized decision records (C01.06–C01.10, incl. `MOLLIE_ALLOW_LIVE=true` rationale in GO-LIVE) ARE committed at HEAD — the docs' "uncommitted" wording is stale
-- `.env.local` now EXISTS on disk (343 B, 2026-09-24 08:17, gitignored in nested and parent repo); MOLLIE-VERIFICATION.md "no such file exists" statement is stale
-- `/.open-next/` and `.wrangler/` gitignored; `wrangler.jsonc` holds vars only; no local CF build evidence
-- no `MODALITY_WORKBOOK.md`, no `opencode.json`, no repo-root `AGENTS.md`; root visual PNGs exist and are gitignored
+## Verified repo truth (2026-09-30)
+- `BS2Mod-site` is its own git repository (own `.git`; `rev-parse --show-toplevel` → `C:/dev/BS2Mod-site`), branch `main`, HEAD `9286a8d`; `origin https://github.com/FinFinnigan/bs2mod.git`; `main` in sync with `origin/main` (no ahead/behind). Real history is exactly 8 commits (`9286a8d` … `0342c4c`).
+- **Nested-repo hazard: RESOLVED (2026-09-30, commit `01ef174c` in `C:\dev`).** The enclosing `C:\dev` is a separate git repository (`origin FinFinnigan/dev.git`, 50 commits, plus `galaxy`/`gppsite1` remotes) that used to track **481 `BS2Mod-site/**` files** as plain files (`100644`, not a `160000` gitlink) while `C:\dev\.gitignore` lines 1–3 already declared `BS2Mod-site/` as ignored — the rule was inert because the paths were already tracked. The owner chose to untrack it; those 481 paths are now index-removed and `C:\dev` HEAD carries **0** `BS2Mod-site` files. The existing ignore rule is now effective. `C:\dev` is 2 commits ahead of `origin/main` (1 pre-existing + `01ef174c`), **not pushed**. The other five `C:\dev` projects (Clix, GPP-site, Helios, leroy, Microsites) are untouched (447 tracked files).
+- `package.json` + `package-lock.json` both `0.11.1`; no `VERSION` file; working tree clean for both
+- `docs/evidence/*` (HANDOFF, PROJECT-STATE, CHANGELOG, GO-LIVE, MOLLIE-VERIFICATION) tracked and committed at HEAD; status PRE-LAUNCH / release blocked. C00.5–C00.9 have since added **uncommitted working-tree edits** to all five (see Working tree below)
+- `next ^15.1.6` + `react ^19.0.0`; `wrangler.jsonc` worker `boyshop-test`, `PUBLIC_URL=https://boyshop-test.i-janajoe.workers.dev`, `main=.open-next/worker.js`, `vars` set no `MOLLIE_ALLOW_LIVE`; `netlify.toml` unselected; `open-next.config.ts` present (default `defineCloudflareConfig()`); scripts `deploy:cf` (`wrangler deploy`) and `preview:cf` (`wrangler dev --remote`)
+- **Cloudflare deploy evidence (C00.10):** worker `boyshop-test` EXISTS in the account (id `49164c690eb347fb830cc825e1aaf73f`, created `2026-09-21T23:10:54Z`, last modified `2026-09-22T01:42:07Z`) and `https://boyshop-test.i-janajoe.workers.dev` returns HTTP 200 with `server: cloudflare` (cf-ray present). BUT there is **no local build/deploy evidence**: `/.open-next/` and `/.wrangler/` do not exist on disk, no wrangler deploy log, `deploy:cf` has not been exercised from this tree. The live staging Worker (`modified 2026-09-22`) is **stale** versus repo HEAD (`2026-09-24T22:45+02:00`) — the Miski2/Miski3 theme commits and C00.4 closeout are not reflected in the deployed artifact.
+- `.env.local` EXISTS (343 B; gitignored via `.gitignore:28 .env*.local`; untracked). Key names only: `DATABASE_URL`, `DATABASE_URL_UNPOOLED`, `NEON_BRANCH` — no Mollie/key material. Treat as a live DB credential at rest; must stay untracked.
+- `.neon` EXISTS (103 B; gitignored via `.gitignore:52`): `orgId org-round-star-75845352`, `projectId weathered-truth-98011402`, `branch main` — identifiers only, no password. No `.dev.vars` / `.dev.vars.*` on disk.
+- `/.open-next/` and `/.wrangler/` are gitignored via `.gitignore:9` / `.gitignore:10`. Neither directory currently exists on disk.
+- **Secret scan (C00.10): clean.** No live keys, private-key blocks, Mollie live keys, or real Postgres credentials in tracked files or history. Only `.env.example` (placeholder `postgres://user:pass@host/db`) and two test files using `postgres://test:test@localhost…`. `.env.example` is a placeholder template only.
+- no `MODALITY_WORKBOOK.md`, no `opencode.json`, no repo-root `AGENTS.md` in the project — confirmed absent repo-wide in C00.11 (see Current execution); the live agent config is user-level, outside every repository. Root visual PNGs exist and are gitignored
 
-## Working tree (uncommitted, approval-gated)
-- tracked `BOYSHOP-NEW-WORKFLOW-PACK/` deleted (~290 files) — ownership/decision gate
-- modified: `src/app/admin/(protected)/products/actions.ts`, `product-form.tsx`
-- untracked: `BOYSHOP-NEW-WORKFLOW-PACK-ULW-GATE*`, dev-server logs, `references/MISKI2-*`, products `__tests__/`
+## Working tree (2026-09-30, BS2Mod-site repo, 12 modified + 7 untracked, uncommitted — C00.12 verified)
+- modified, uncommitted (approval-gated, no commit made): `.gitignore` (C00.2), `docs/evidence/MOLLIE-VERIFICATION.md` (C00.5), `docs/evidence/GO-LIVE.md` (C00.6), `docs/evidence/HANDOFF.md` (C00.7), `docs/evidence/CHANGELOG.md` (C00.8), `docs/evidence/PROJECT-STATE.md` (C00.9), plus the pack control files `CURRENT-STATE.md` / `IMPLEMENTATION-MAP.md` / `NEXT.md` / `INDEX.md` and the chunk files `C00.9` / `C00.10`. **C00.12 verified: all 12 are docs/evidence/pack/.gitignore — zero product/source/config change.**
+- `BS2Mod-site` `main` is **in sync** with `origin/main` (no ahead/behind); all work above is uncommitted working-tree change
+- untracked and **not** ignored (would be swept by `git add -A`, which the rules forbid): `BOYSHOP-NEW-WORKFLOW-PACK-ULW-GATE.zip` (~195 KB), `BOYSHOP-POSTBUILD-INFRA-READINESS-PACK.zip` (~33 KB), `dev-server.log`, `dev-server.err.log` (empty), `references/MISKI2-FINAL-OVERHAUL-SOURCE/` (32 files, ~13 MB), `references/MISKI2-FINAL-OVERHAUL-SOURCE.zip`, and the C00.14 chunk file `chunks/00-repo-stabilization/C00.14-nested-repo-boundary.md` (the only untracked file that belongs in a future commit)
+- ignored on disk: `artifacts/` (QA screenshots), root `*.png`, `node_modules/`, `.next/`, `.codegraph/`, `.omo/` (verified ignored, 0 tracked)
 
 ## Current execution
-`chunks/00-repo-stabilization/C00.4-audit-stale-paperwork.md` — COMPLETE (read-only audit; findings reported, docs untouched)
+`chunks/00-repo-stabilization/C00.12-precommit-verification.md` — COMPLETE (verification only, **no commit**). All checks passed: (1) **scope** — 12 modified files, every one docs/evidence/pack/.gitignore, zero product/source/config change; (2) **secrets** — clean, the 2 `neon-url-pw` pattern hits are doc text describing C00.10's scan (placeholder `.env.example` + test-localhost URLs), working-tree grep = 0 real matches; (3) **excluded visuals** — root PNGs (`bs2mod-home-miski.png`, `qa-desktop-1440.png`) exist, ignored, untracked; the 13 tracked images are legit assets in `public/templates/miski3/` + `references/`, none at root; (4) **typecheck PASSED** (`tsc --noEmit`, no errors); (5) **tests PASSED** — 325 passed / 6 skipped (37 files), the Mollie stderr line is the safety gate working correctly (live key rejected without `MOLLIE_ALLOW_LIVE=true`); (6) **`.wrangler/` ignore CONFIRMED** at `.gitignore:10:/.wrangler/`. **Two findings:** (F1) `docs/evidence/HANDOFF.md` lines 104/117–121/145 are stale — they claim `.wrangler/` is "not gitignored" and "Release remains BLOCKED", contradicting the working-tree `.gitignore:10`, CHANGELOG.md:91, GO-LIVE.md:182/242, PROJECT-STATE.md:73; doc correction is a candidate for C00.13 scope. (F2) the 6 untracked artifacts (2 zips, 2 logs, MISKI2 zip + dir) are NOT gitignored — `git add -A` would sweep them (forbidden by rules; explicit-path staging only). Verdict: **PASSED with findings; no commit (per chunk).**
 
 ## Next execution
-`chunks/00-repo-stabilization/C00.5-update-mollie-paperwork.md`
+`chunks/00-repo-stabilization/C00.13-approved-commit.md` — the approved commit of the verified working tree. **Requires explicit user approval before any commit.** Suggested scope: the 12 verified modified files + the C00.14 chunk file (untracked, belongs in the repo), with explicit-path staging only; optionally fold in the HANDOFF.md stale-claim fix (F1). The 6 artifact entries (F2) stay untracked.
+
+## Re-plan note (C00.11 closeout)
+C00.14's boundary decision was **made and executed**: the owner chose Option 1 (untrack from the outer repo), and it was completed with explicit approval — `git rm -r --cached BS2Mod-site` in `C:\dev` staged 481 index-only deletions (all type `D`, 0 outside `BS2Mod-site`), followed by commit `01ef174c` "Untrack BS2Mod-site: content is owned by the standalone FinFinnigan/bs2mod repository". Verified: `C:\dev` HEAD tree now contains **0** `BS2Mod-site` files, total tracked **447** (the other five projects untouched), working files still on disk, `.gitignore:3 BS2Mod-site/` now actually effective, and `git status --porcelain -- BS2Mod-site` is empty. The nested-repo hazard is **RESOLVED**. `C:\dev` is now 2 commits ahead of `origin/main` (1 pre-existing + `01ef174c`) and **not pushed**. C00.11 then proved itself a false premise (its two target files do not exist) and was retired as not-applicable by owner decision. With both ownership questions closed, **C00.12** (pre-commit verification) ran and PASSED (12 modified + 7 untracked, zero product source, secrets clean, typecheck + tests green, 2 findings recorded); **C00.13** (approved commit) is next and **still requires explicit user approval before any commit.** Also still true: no local Cloudflare build evidence and the staging Worker predates HEAD — a rebuild/`preview:cf` before any deploy remains an approval-gated operator step (not authorized here).
 
 ## Update rule
 Keep this concise. Replace stale current facts; do not use it as a long history log.

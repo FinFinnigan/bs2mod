@@ -7,6 +7,7 @@
 
 # opennext (cloudflare) build output
 /.open-next/
+/.wrangler/
 
 # production
 /build
