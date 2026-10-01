@@ -1,6 +1,6 @@
 # CURRENT-STATE — BoyShop / BS2Mod
 
-Last refreshed: 2026-10-01. HEAD is `3e21455ca1aaefa6402b11952e5d24a72a61878f` (25 commits, measured just before the C01.07 sync commit, which moves them on by one); C01.04 through C01.07 are complete.
+Last refreshed: 2026-10-01. HEAD is `3e21455ca1aaefa6402b11952e5d24a72a61878f` (25 commits, measured just before the C01.07 sync commit); C01.04 through C01.07 are complete.
 
 ## Active phase
 Phase 00 — Repo stabilization: **COMPLETE** (C00.1–C00.14 all closed; C00.13 committed)
