@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { hasDatabase } from "@/lib/backend/db/client";
 import { getApp } from "@/lib/backend/container";
 import { AdminProductsService } from "@/lib/backend/services/admin-products";
@@ -74,11 +75,12 @@ export default async function AdminProductsPage() {
                 >
                   <td style={{ padding: "var(--space-3)" }}>
                     <div style={{ display: "flex", alignItems: "center", gap: "var(--space-2)" }}>
-                      <img
+                      <Image
                         src={placeholder(p.name, p.colourHex ?? undefined, undefined, 48, 64)}
                         alt=""
                         width={48}
                         height={64}
+                        unoptimized
                         style={{ borderRadius: 6, display: "block" }}
                       />
                       <Link
