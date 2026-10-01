@@ -12,5 +12,5 @@ export function StoreImage(props:ImgHTMLAttributes<HTMLImageElement>){
  return <span role={props.alt?'img':undefined} aria-label={props.alt||undefined} aria-hidden={!props.alt||undefined} className="m2-demo-photo" style={{display:'block',width:'100%',height:'100%',aspectRatio:'3 / 4',...props.style,backgroundImage:'url(/templates/miski3/catalog.png)',backgroundSize:'400% 200%',backgroundPosition:`${index%4*100/3}% ${index<4?0:100}%`}}/>;
  }
  // eslint-disable-next-line @next/next/no-img-element
- return <img {...props}/>;
+ return <img {...props} alt={props.alt??''}/>;
 }
